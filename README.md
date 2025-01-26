@@ -10,85 +10,13 @@
 - Anchor CLI 0.30.1 or higher
 - Solana CLI 1.18.17 or higher
 
-### Installation
+### Run the project
 
-#### Clone the repo
+Frontend: npm run dev
 
-```shell
-git clone <repo-url>
-cd <repo-name>
-```
+### Dependencies
 
-#### Install Dependencies
+# Supabase
 
-```shell
-pnpm install
-```
-
-#### Start the web app
-
-```
-pnpm dev
-```
-
-## Apps
-
-### anchor
-
-This is a Solana program written in Rust using the Anchor framework.
-
-#### Commands
-
-You can use any normal anchor commands. Either move to the `anchor` directory and run the `anchor` command or prefix the command with `pnpm`, eg: `pnpm anchor`.
-
-#### Sync the program id:
-
-Running this command will create a new keypair in the `anchor/target/deploy` directory and save the address to the Anchor config file and update the `declare_id!` macro in the `./src/lib.rs` file of the program.
-
-You will manually need to update the constant in `anchor/lib/counter-exports.ts` to match the new program id.
-
-```shell
-pnpm anchor keys sync
-```
-
-#### Build the program:
-
-```shell
-pnpm anchor-build
-```
-
-#### Start the test validator with the program deployed:
-
-```shell
-pnpm anchor-localnet
-```
-
-#### Run the tests
-
-```shell
-pnpm anchor-test
-```
-
-#### Deploy to Devnet
-
-```shell
-pnpm anchor deploy --provider.cluster devnet
-```
-
-### web
-
-This is a React app that uses the Anchor generated client to interact with the Solana program.
-
-#### Commands
-
-Start the web app
-
-```shell
-pnpm dev
-```
-
-Build the web app
-
-```shell
-pnpm build
-```
+- Project URL: https://qaepvtcwwciwbdvwerll.supabase.co
+- API Key(DO NOT EXPOSE!!!!): eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhZXB2dGN3d2Npd2JkdndlcmxsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc5Mjk3NTAsImV4cCI6MjA1MzUwNTc1MH0.smgxfZZvvOtV2hf_jZQdqhOunhPpjJa0UAVJWDWvhFw
