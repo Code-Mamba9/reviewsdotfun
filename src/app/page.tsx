@@ -141,49 +141,6 @@ export default function Home() {
           <Button size="lg">Write a Review</Button>
         </div>
       </div>
-      <footer className="bg-gray-800 text-white py-8 mt-12">
-        <div className="px-4 sm:px-6 md:px-8 lg:px-12 w-full max-w-[2000px] mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-xl font-semibold mb-4">About Us</h3>
-              <p className="text-gray-400">
-                We're dedicated to providing honest and helpful reviews to
-                consumers.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white">
-                    Home
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white">
-                    Categories
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white">
-                    Top Rated
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-400 hover:text-white">
-                    Write a Review
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-4">Contact</h3>
-              <p className="text-gray-400">Email: info@reviewwebsite.com</p>
-              <p className="text-gray-400">Phone: (123) 456-7890</p>
-            </div>
-          </div>
-        </div>
-      </footer>
     </main>
   );
 }
