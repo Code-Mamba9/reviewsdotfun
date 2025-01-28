@@ -6,11 +6,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 interface ProfilePictureUploadProps {
   profilePicture: File | null;
   setProfilePicture: React.Dispatch<React.SetStateAction<File | null>>;
+  required?: boolean;
 }
 
 export function ProfilePictureUpload({
   profilePicture,
   setProfilePicture,
+  required = false,
 }: ProfilePictureUploadProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -28,14 +30,17 @@ export function ProfilePictureUpload({
 
   return (
     <div className="space-y-2">
-      <Label htmlFor="profilePicture">Profile Picture</Label>
+      <Label htmlFor="profilePicture">
+        Profile Picture
+        {required && <span className="text-red-500 ml-1">*</span>}
+      </Label>
       <div className="flex items-center space-x-4">
         <Avatar className="w-20 h-20">
           <AvatarImage
             src={previewUrl || undefined}
             alt="Profile picture preview"
           />
-          <AvatarFallback>UP</AvatarFallback>
+          <AvatarFallback>Picture</AvatarFallback>
         </Avatar>
         <Input
           id="profilePicture"
@@ -43,7 +48,7 @@ export function ProfilePictureUpload({
           accept="image/*"
           onChange={handleFileChange}
           className="max-w-[220px]"
-          required
+          required={required}
         />
       </div>
     </div>

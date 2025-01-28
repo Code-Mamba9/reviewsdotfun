@@ -14,12 +14,14 @@ interface WalletAddressInputProps {
   addresses: string[];
   setAddresses: React.Dispatch<React.SetStateAction<string[]>>;
   isValidAddress: (address: string) => boolean;
+  required?: boolean;
 }
 
 export function WalletAddressInput({
   addresses,
   setAddresses,
   isValidAddress,
+  required = false,
 }: WalletAddressInputProps) {
   const [errors, setErrors] = useState<string[]>(addresses.map(() => ""));
 
@@ -46,7 +48,10 @@ export function WalletAddressInput({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <Label>Recipient Wallet Addresses</Label>
+        <Label>
+          Recipient Wallet Addresses
+          {required && <span className="text-red-500 ml-1">*</span>}
+        </Label>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
@@ -66,7 +71,7 @@ export function WalletAddressInput({
                 value={address}
                 onChange={(e) => updateAddress(index, e.target.value)}
                 placeholder="Enter wallet address"
-                required
+                required={required}
                 className={`pr-8 ${errors[index] ? "border-red-500 focus:ring-red-500" : ""}`}
                 aria-invalid={errors[index] ? "true" : "false"}
                 aria-describedby={errors[index] ? `error-${index}` : undefined}
