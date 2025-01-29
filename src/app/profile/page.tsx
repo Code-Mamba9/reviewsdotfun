@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,17 +10,29 @@ import { ProfilePictureUpload } from "./ProfilePictureUpload";
 import { TokenImageUpload } from "./TokenImageUpload";
 import { supabase } from "@/lib/supabaseClient";
 import { PublicKey } from "@solana/web3.js";
+import { profile } from "node:console";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 const requiredFieldIndicator = <span className="text-red-500 ml-1">*</span>;
 
 export default function CreateMerchantProfile() {
+  const { publicKey } = useWallet();
+
   const [showModal, setShowModal] = useState(true);
   const [companyName, setCompanyName] = useState("");
   const [companyWebsite, setCompanyWebsite] = useState("");
-  const [walletAddresses, setWalletAddresses] = useState([""]);
+  const [walletAddresses, setWalletAddresses] = useState([
+    publicKey?.toString(),
+  ]);
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [tokenTicker, setTokenTicker] = useState("");
   const [tokenImage, setTokenImage] = useState<File | null>(null);
+
+  useEffect(() => {
+    if (publicKey) {
+      setWalletAddresses([publicKey.toString()]);
+    }
+  }, [publicKey]);
 
   const isValidWalletAddress = (address: string) => {
     if (!address) return true;
@@ -33,6 +45,8 @@ export default function CreateMerchantProfile() {
   };
 
   const uploadImage = async (file: File, path: string) => {
+    const { data } = await supabase.from("Merchants").select("");
+    console.log(data);
     const { error } = await supabase.storage
       .from("merchant-profile-dev")
       .upload(path, file);
@@ -66,6 +80,7 @@ export default function CreateMerchantProfile() {
       tokenPicPath && tokenImage
         ? await uploadImage(tokenImage, tokenPicPath)
         : null;
+    console.log(tokenPicUrl, profilePicUrl);
 
     const { error } = await supabase.from("Merchants").insert({
       created_at: Date.now(),
