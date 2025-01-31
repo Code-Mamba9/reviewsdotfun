@@ -10,7 +10,6 @@ import { ProfilePictureUpload } from "./ProfilePictureUpload";
 import { TokenImageUpload } from "./TokenImageUpload";
 import { supabase } from "@/lib/supabaseClient";
 import { PublicKey } from "@solana/web3.js";
-import { profile } from "node:console";
 import { useWallet } from "@solana/wallet-adapter-react";
 
 const requiredFieldIndicator = <span className="text-red-500 ml-1">*</span>;
@@ -84,7 +83,7 @@ export default function CreateMerchantProfile() {
 
     const { error } = await supabase.from("Merchants").insert({
       created_at: Date.now(),
-      merchant_wallet_address: walletAddresses[0],
+      merchant_wallet_addr: walletAddresses[0],
       name: companyName,
       profile_pic: profilePicUrl,
       token_name: tokenTicker,
