@@ -14,7 +14,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 
 const requiredFieldIndicator = <span className="text-red-500 ml-1">*</span>;
 
-export default function CreateMerchantProfile() {
+export default function CreatePage() {
   const { publicKey } = useWallet();
 
   const [showModal, setShowModal] = useState(true);

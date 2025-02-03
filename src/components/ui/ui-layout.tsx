@@ -13,7 +13,9 @@ import {
   ExplorerLink,
 } from "../cluster/cluster-ui";
 import { WalletButton } from "../solana/solana-provider";
+// import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { Button } from "@/components/ui/button";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 export default function Home() {
   return (
@@ -54,8 +56,11 @@ export function UiLayout({
         </div>
         <div className="flex-none space-x-2">
           <WalletButton />
+          {/* <WalletMultiButton /> */}
           <ClusterUiSelect />
-          <Button>Createa a Merchant profile</Button>
+          <Link href="/profile">
+            <Button>Createa a Merchant profile</Button>
+          </Link>
         </div>
       </div>
       <ClusterChecker>
