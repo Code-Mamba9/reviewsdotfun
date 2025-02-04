@@ -64,6 +64,15 @@ const useMerchantStore = create<MerchantStore>((set, get) => ({
       tokenTicker: "",
       tokenImage: null,
     }),
+  isValidWalletAddress: (address: string) => {
+    if (!address) return true;
+    try {
+      const walletAddress = new PublicKey(address);
+      return PublicKey.isOnCurve(walletAddress);
+    } catch {
+      return false;
+    }
+  },
 
   updateMerchant: async () => {
     const {
@@ -77,16 +86,6 @@ const useMerchantStore = create<MerchantStore>((set, get) => ({
     } = get();
 
     if (!merchant) return;
-
-    const isValidWalletAddress = (address: string) => {
-      if (!address) return true;
-      try {
-        const walletAddress = new PublicKey(address);
-        return PublicKey.isOnCurve(walletAddress);
-      } catch {
-        return false;
-      }
-    };
 
     if (!walletAddresses.every(isValidWalletAddress)) {
       throw new Error("Please enter valid wallet addresses.");

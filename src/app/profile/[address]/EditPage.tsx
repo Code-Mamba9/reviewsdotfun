@@ -1,24 +1,24 @@
 "use client";
 
 import type React from "react";
-import { useEffect } from "react";
+import { useEffect, FC } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { WalletAddressInput } from "./WalletAddressInput";
 import { ProfilePictureUpload } from "./ProfilePictureUpload";
 import { TokenImageUpload } from "./TokenImageUpload";
-import useMerchantStore from "@/store/useMerchantStore";
-import { PublicKey } from "@solana/web3.js";
-import type { Merchant } from "@/types";
 
+import useMerchantStore from "@/store/useMerchantStore";
+import type { Merchant } from "@/types";
+import { isValidWalletAddress } from "@/utils/wallet";
 const requiredFieldIndicator = <span className="text-red-500 ml-1">*</span>;
 
 interface EditPageProps {
   initialMerchant: Merchant;
 }
 
-const EditPage: React.FC<EditPageProps> = ({ initialMerchant }) => {
+const EditPage: FC<EditPageProps> = ({ initialMerchant }) => {
   const {
     merchant,
     companyName,
@@ -59,16 +59,6 @@ const EditPage: React.FC<EditPageProps> = ({ initialMerchant }) => {
   const handleCancel = () => {
     resetForm();
     setIsEditing(false);
-  };
-
-  const isValidWalletAddress = (address: string) => {
-    if (!address) return true;
-    try {
-      const walletAddress = new PublicKey(address);
-      return PublicKey.isOnCurve(walletAddress);
-    } catch {
-      return false;
-    }
   };
 
   return (

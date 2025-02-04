@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,13 +9,13 @@ import { WalletAddressInput } from "./WalletAddressInput";
 import { WarningModal } from "./WarningModal";
 import { ProfilePictureUpload } from "./ProfilePictureUpload";
 import { TokenImageUpload } from "./TokenImageUpload";
-import { PublicKey } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";
 import useMerchantStore from "@/store/useMerchantStore";
+import { isValidWalletAddress } from "@/utils/wallet";
 
 const requiredFieldIndicator = <span className="text-red-500 ml-1">*</span>;
 
-export default function CreatePage() {
+const CreatePage: FC = () => {
   const { publicKey } = useWallet();
   const [showModal, setShowModal] = useState(true);
 
@@ -46,16 +46,6 @@ export default function CreatePage() {
     // Reset the form when the component mounts
     resetForm();
   }, [resetForm]);
-
-  const isValidWalletAddress = (address: string) => {
-    if (!address) return true;
-    try {
-      const walletAddress = new PublicKey(address);
-      return PublicKey.isOnCurve(walletAddress);
-    } catch {
-      return false;
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -144,4 +134,6 @@ export default function CreatePage() {
       </div>
     </div>
   );
-}
+};
+
+export default CreatePage;
