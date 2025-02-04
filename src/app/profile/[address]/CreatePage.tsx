@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,30 +9,43 @@ import { WalletAddressInput } from "./WalletAddressInput";
 import { WarningModal } from "./WarningModal";
 import { ProfilePictureUpload } from "./ProfilePictureUpload";
 import { TokenImageUpload } from "./TokenImageUpload";
-import { supabase } from "@/lib/supabaseClient";
 import { PublicKey } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";
+import useMerchantStore from "@/store/useMerchantStore";
 
 const requiredFieldIndicator = <span className="text-red-500 ml-1">*</span>;
 
 export default function CreatePage() {
   const { publicKey } = useWallet();
-
   const [showModal, setShowModal] = useState(true);
-  const [companyName, setCompanyName] = useState("");
-  const [companyWebsite, setCompanyWebsite] = useState("");
-  const [walletAddresses, setWalletAddresses] = useState([
-    publicKey?.toString(),
-  ]);
-  const [profilePicture, setProfilePicture] = useState<File | null>(null);
-  const [tokenTicker, setTokenTicker] = useState("");
-  const [tokenImage, setTokenImage] = useState<File | null>(null);
+
+  const {
+    companyName,
+    companyWebsite,
+    walletAddresses,
+    profilePicture,
+    tokenTicker,
+    tokenImage,
+    setCompanyName,
+    setCompanyWebsite,
+    setWalletAddresses,
+    setProfilePicture,
+    setTokenTicker,
+    setTokenImage,
+    createMerchant,
+    resetForm,
+  } = useMerchantStore();
 
   useEffect(() => {
     if (publicKey) {
       setWalletAddresses([publicKey.toString()]);
     }
-  }, [publicKey]);
+  }, [publicKey, setWalletAddresses]);
+
+  useEffect(() => {
+    // Reset the form when the component mounts
+    resetForm();
+  }, [resetForm]);
 
   const isValidWalletAddress = (address: string) => {
     if (!address) return true;
@@ -43,56 +57,14 @@ export default function CreatePage() {
     }
   };
 
-  const uploadImage = async (file: File, path: string) => {
-    const { data } = await supabase.from("Merchants").select("");
-    console.log(data);
-    const { error } = await supabase.storage
-      .from("merchant-profile-dev")
-      .upload(path, file);
-
-    if (error) throw error;
-    const { data: publickUrlData } = supabase.storage
-      .from("merchant-profile-dev")
-      .getPublicUrl(path);
-
-    return publickUrlData;
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!profilePicture) {
-      alert("Please upload a profile picture.");
-      return;
-    }
-    if (!walletAddresses.every(isValidWalletAddress)) {
-      alert("Please enter valid wallet addresses.");
-      return;
-    }
-
-    const profilePicPath = `profile-${companyName}-${profilePicture.name}`;
-    const tokenPicPath = tokenImage
-      ? `token-${companyName}-${tokenImage.name}`
-      : null;
-
-    const profilePicUrl = await uploadImage(profilePicture, profilePicPath);
-    const tokenPicUrl =
-      tokenPicPath && tokenImage
-        ? await uploadImage(tokenImage, tokenPicPath)
-        : null;
-    console.log(tokenPicUrl, profilePicUrl);
-
-    const { error } = await supabase.from("Merchants").insert({
-      created_at: Date.now(),
-      merchant_wallet_addr: walletAddresses[0],
-      name: companyName,
-      profile_pic: profilePicUrl,
-      token_name: tokenTicker,
-      token_pic: tokenPicUrl,
-      website_url: companyWebsite,
-    });
-
-    if (error) {
-      throw error;
+    try {
+      await createMerchant();
+      alert("Merchant profile created successfully!");
+      // You might want to redirect the user or show a success message here
+    } catch (error) {
+      alert(`Error creating profile: ${error}`);
     }
   };
 

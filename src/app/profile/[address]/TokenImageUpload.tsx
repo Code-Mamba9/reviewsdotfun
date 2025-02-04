@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -6,16 +6,26 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface TokenImageUploadProps {
   tokenImage: File | null;
-  setTokenImage: React.Dispatch<React.SetStateAction<File | null>>;
+  setTokenImage: (file: File | null) => void;
   profilePicture: File | null;
+  currentTokenImageUrl?: string;
 }
 
 export function TokenImageUpload({
   tokenImage,
   setTokenImage,
   profilePicture,
+  currentTokenImageUrl,
 }: TokenImageUploadProps) {
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(
+    currentTokenImageUrl || null,
+  );
+
+  useEffect(() => {
+    if (currentTokenImageUrl) {
+      setPreviewUrl(currentTokenImageUrl);
+    }
+  }, [currentTokenImageUrl]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

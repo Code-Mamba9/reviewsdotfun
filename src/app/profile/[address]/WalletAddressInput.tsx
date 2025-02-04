@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ import {
 
 interface WalletAddressInputProps {
   addresses: string[];
-  setAddresses: React.Dispatch<React.SetStateAction<string[]>>;
+  setAddresses: (addresses: string[]) => void;
   isValidAddress: (address: string) => boolean;
   required?: boolean;
 }
@@ -25,24 +25,27 @@ export function WalletAddressInput({
 }: WalletAddressInputProps) {
   const [errors, setErrors] = useState<string[]>(addresses.map(() => ""));
 
+  useEffect(() => {
+    setErrors(
+      addresses.map((address) =>
+        isValidAddress(address) ? "" : "Invalid wallet address",
+      ),
+    );
+  }, [addresses, isValidAddress]);
+
   const addAddress = () => {
     setAddresses([...addresses, ""]);
-    setErrors([...errors, ""]);
   };
 
   const removeAddress = (index: number) => {
-    setAddresses(addresses.filter((_, i) => i !== index));
-    setErrors(errors.filter((_, i) => i !== index));
+    const newAddresses = addresses.filter((_, i) => i !== index);
+    setAddresses(newAddresses);
   };
 
   const updateAddress = (index: number, value: string) => {
     const newAddresses = [...addresses];
     newAddresses[index] = value;
     setAddresses(newAddresses);
-
-    const newErrors = [...errors];
-    newErrors[index] = isValidAddress(value) ? "" : "Invalid wallet address";
-    setErrors(newErrors);
   };
 
   return (

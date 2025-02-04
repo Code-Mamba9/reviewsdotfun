@@ -5,16 +5,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface ProfilePictureUploadProps {
   profilePicture: File | null;
-  setProfilePicture: React.Dispatch<React.SetStateAction<File | null>>;
+  setProfilePicture: (file: File | null) => void;
+  currentProfilePicUrl?: string;
   required?: boolean;
 }
 
 export function ProfilePictureUpload({
   profilePicture,
   setProfilePicture,
+  currentProfilePicUrl,
   required = false,
 }: ProfilePictureUploadProps) {
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(
+    currentProfilePicUrl || null,
+  );
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
