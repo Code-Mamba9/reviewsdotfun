@@ -2,6 +2,7 @@ import { create } from "zustand";
 import type { Merchant } from "@/types";
 import { supabase } from "@/lib/supabaseClient";
 import { PublicKey } from "@solana/web3.js";
+import { isValidWalletAddress } from "@/utils/wallet";
 
 interface MerchantStore {
   merchant: Merchant | null;
@@ -64,15 +65,6 @@ const useMerchantStore = create<MerchantStore>((set, get) => ({
       tokenTicker: "",
       tokenImage: null,
     }),
-  isValidWalletAddress: (address: string) => {
-    if (!address) return true;
-    try {
-      const walletAddress = new PublicKey(address);
-      return PublicKey.isOnCurve(walletAddress);
-    } catch {
-      return false;
-    }
-  },
 
   updateMerchant: async () => {
     const {

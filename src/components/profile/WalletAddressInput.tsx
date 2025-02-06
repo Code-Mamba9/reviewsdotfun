@@ -9,6 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { isValidWalletAddress } from "@/utils/wallet";
 
 interface WalletAddressInputProps {
   addresses: string[];
@@ -20,7 +21,6 @@ interface WalletAddressInputProps {
 export function WalletAddressInput({
   addresses,
   setAddresses,
-  isValidAddress,
   required = false,
 }: WalletAddressInputProps) {
   const [errors, setErrors] = useState<string[]>(addresses.map(() => ""));
@@ -28,10 +28,10 @@ export function WalletAddressInput({
   useEffect(() => {
     setErrors(
       addresses.map((address) =>
-        isValidAddress(address) ? "" : "Invalid wallet address",
+        isValidWalletAddress(address) ? "" : "Invalid wallet address",
       ),
     );
-  }, [addresses, isValidAddress]);
+  }, [addresses]);
 
   const addAddress = () => {
     setAddresses([...addresses, ""]);

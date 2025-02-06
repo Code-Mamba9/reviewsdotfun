@@ -1,19 +1,11 @@
 "use client";
 
 import type React from "react";
-import { FC, useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { WalletAddressInput } from "./WalletAddressInput";
+import { useEffect, useState, FC, FormEvent } from "react";
 import { WarningModal } from "./WarningModal";
-import { ProfilePictureUpload } from "./ProfilePictureUpload";
-import { TokenImageUpload } from "./TokenImageUpload";
 import { useWallet } from "@solana/wallet-adapter-react";
 import useMerchantStore from "@/store/useMerchantStore";
-import { isValidWalletAddress } from "@/utils/wallet";
-
-const requiredFieldIndicator = <span className="text-red-500 ml-1">*</span>;
+import { MerchantForm } from "@/components/profile/MerchantForm";
 
 const CreatePage: FC = () => {
   const { publicKey } = useWallet();
@@ -47,7 +39,7 @@ const CreatePage: FC = () => {
     resetForm();
   }, [resetForm]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
       await createMerchant();
@@ -67,70 +59,23 @@ const CreatePage: FC = () => {
           Create Merchant Profile
         </h1>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <ProfilePictureUpload
-            profilePicture={profilePicture}
-            setProfilePicture={setProfilePicture}
-            required={true}
-          />
-
-          <div>
-            <Label htmlFor="companyName">
-              Company Name{requiredFieldIndicator}
-            </Label>
-            <Input
-              id="companyName"
-              value={companyName}
-              onChange={(e) => setCompanyName(e.target.value)}
-              required
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="companyWebsite">
-              Company Website URL{requiredFieldIndicator}
-            </Label>
-            <Input
-              id="companyWebsite"
-              type="url"
-              value={companyWebsite}
-              onChange={(e) => setCompanyWebsite(e.target.value)}
-              required
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="tokenTicker">
-              Token Ticker{requiredFieldIndicator}
-            </Label>
-            <Input
-              id="tokenTicker"
-              value={tokenTicker}
-              onChange={(e) => setTokenTicker(e.target.value.toUpperCase())}
-              placeholder="SOL"
-              maxLength={8}
-              required
-            />
-            <p className="text-sm text-gray-500 mt-1">Max 8 characters</p>
-          </div>
-
-          <TokenImageUpload
-            tokenImage={tokenImage}
-            setTokenImage={setTokenImage}
-            profilePicture={profilePicture}
-          />
-
-          <WalletAddressInput
-            addresses={walletAddresses}
-            setAddresses={setWalletAddresses}
-            isValidAddress={isValidWalletAddress}
-            required={true}
-          />
-
-          <Button type="submit" className="w-full">
-            Submit
-          </Button>
-        </form>
+        <MerchantForm
+          merchant={null}
+          companyName={companyName}
+          companyWebsite={companyWebsite}
+          walletAddresses={walletAddresses}
+          profilePicture={profilePicture}
+          tokenTicker={tokenTicker}
+          tokenImage={tokenImage}
+          setCompanyName={setCompanyName}
+          setCompanyWebsite={setCompanyWebsite}
+          setWalletAddresses={setWalletAddresses}
+          setProfilePicture={setProfilePicture}
+          setTokenTicker={setTokenTicker}
+          setTokenImage={setTokenImage}
+          onSubmit={handleSubmit}
+          submitButtonText="Submit"
+        />
       </div>
     </div>
   );
