@@ -36,7 +36,6 @@ export function MerchantForm({
   walletAddresses,
   profilePicture,
   tokenTicker,
-  tokenImage,
   setCompanyName,
   setCompanyWebsite,
   setWalletAddresses,
@@ -51,7 +50,6 @@ export function MerchantForm({
   return (
     <form onSubmit={onSubmit} className="space-y-6">
       <ProfilePictureUpload
-        profilePicture={profilePicture}
         setProfilePicture={setProfilePicture}
         currentProfilePicUrl={merchant?.profile_pic}
         required={!merchant}
@@ -98,7 +96,6 @@ export function MerchantForm({
       </div>
 
       <TokenImageUpload
-        tokenImage={tokenImage}
         setTokenImage={setTokenImage}
         profilePicture={profilePicture}
         currentTokenImageUrl={merchant?.token_pic}

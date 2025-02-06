@@ -5,14 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface TokenImageUploadProps {
-  tokenImage: File | null;
   setTokenImage: (file: File | null) => void;
   profilePicture: File | null;
   currentTokenImageUrl?: string;
 }
 
 export function TokenImageUpload({
-  tokenImage,
   setTokenImage,
   profilePicture,
   currentTokenImageUrl,

@@ -100,12 +100,12 @@ const useMerchantStore = create<MerchantStore>((set, get) => ({
     let updatedTokenPicUrl = merchant.token_pic;
 
     if (profilePicture) {
-      const profilePicPath = `profile-${companyName}-${profilePicture.name}`;
+      const profilePicPath = `profile-${companyName}-${walletAddresses[0]}`;
       updatedProfilePicUrl = await uploadImage(profilePicture, profilePicPath);
     }
 
     if (tokenImage) {
-      const tokenPicPath = `token-${companyName}-${tokenImage.name}`;
+      const tokenPicPath = `token-${companyName}-${walletAddresses[0]}`;
       updatedTokenPicUrl = await uploadImage(tokenImage, tokenPicPath);
     }
 
@@ -180,12 +180,12 @@ const useMerchantStore = create<MerchantStore>((set, get) => ({
       return publicUrlData.publicUrl;
     };
 
-    const profilePicPath = `profile-${companyName}-${profilePicture.name}`;
+    const profilePicPath = `profile-${companyName}-${walletAddresses[0]}`;
     const profilePicUrl = await uploadImage(profilePicture, profilePicPath);
 
     let tokenPicUrl = null;
     if (tokenImage) {
-      const tokenPicPath = `token-${companyName}-${tokenImage.name}`;
+      const tokenPicPath = `token-${companyName}-${walletAddresses[0]}`;
       tokenPicUrl = await uploadImage(tokenImage, tokenPicPath);
     }
 

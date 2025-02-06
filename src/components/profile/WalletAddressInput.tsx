@@ -14,7 +14,6 @@ import { isValidWalletAddress } from "@/utils/wallet";
 interface WalletAddressInputProps {
   addresses: string[];
   setAddresses: (addresses: string[]) => void;
-  isValidAddress: (address: string) => boolean;
   required?: boolean;
 }
 

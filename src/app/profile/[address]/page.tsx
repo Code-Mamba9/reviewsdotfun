@@ -3,6 +3,8 @@ import type { Merchant } from "@/types";
 import CreatePage from "./CreatePage";
 import EditPage from "./EditPage";
 
+export const fetchCache = "force-no-store";
+
 interface ProfilePageProps {
   params: {
     address: string;
@@ -22,7 +24,7 @@ export default async function Profile({ params }: ProfilePageProps) {
 
   const { data, error }: MerchantTableResponse = await supabase
     .from("Merchants")
-    .select("*")
+    .select("*", { head: false })
     .eq("merchant_wallet_addr", address);
 
   if (error) {

@@ -2,14 +2,16 @@
 
 import type React from "react";
 import { useEffect, useState, FC, FormEvent } from "react";
-import { WarningModal } from "./WarningModal";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { useRouter } from "next/navigation";
+import { WarningModal } from "./WarningModal";
 import useMerchantStore from "@/store/useMerchantStore";
 import { MerchantForm } from "@/components/profile/MerchantForm";
 
 const CreatePage: FC = () => {
   const { publicKey } = useWallet();
   const [showModal, setShowModal] = useState(true);
+  const router = useRouter();
 
   const {
     companyName,
@@ -43,7 +45,8 @@ const CreatePage: FC = () => {
     e.preventDefault();
     try {
       await createMerchant();
-      alert("Merchant profile created successfully!");
+      router.push("/");
+
       // You might want to redirect the user or show a success message here
     } catch (error) {
       alert(`Error creating profile: ${error}`);

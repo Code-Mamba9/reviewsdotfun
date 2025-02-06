@@ -4,14 +4,12 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface ProfilePictureUploadProps {
-  profilePicture: File | null;
   setProfilePicture: (file: File | null) => void;
   currentProfilePicUrl?: string;
   required?: boolean;
 }
 
 export function ProfilePictureUpload({
-  profilePicture,
   setProfilePicture,
   currentProfilePicUrl,
   required = false,
