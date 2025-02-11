@@ -14,7 +14,9 @@ declare_id!("coUnmi3oBUtwtd9fjeAvSsJssXh5A5xyPbhpewyzRVF");
 pub mod reviewsdotfun {
     use super::*;
     pub fn create_merchant(ctx: Context<CreateMerchant>) -> Result<()> {
-      CreateMerchant::create_merchant(ctx)
+        CreateMerchant::create_merchant(ctx)
+    }
+    pub fn create_mint(ctx: Context<CreateMint>, args: CreateMintArgs) -> Result<()> {
+        CreateMint::create_mint(ctx, args)
     }
 }
-

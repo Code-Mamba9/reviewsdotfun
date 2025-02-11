@@ -14,92 +14,51 @@ export type Reviewsdotfun = {
   },
   "instructions": [
     {
-      "name": "close",
+      "name": "createMerchant",
       "discriminator": [
-        98,
-        165,
-        201,
-        177,
-        108,
-        65,
-        206,
-        96
+        249,
+        172,
+        245,
+        100,
+        32,
+        117,
+        97,
+        156
       ],
       "accounts": [
         {
-          "name": "payer",
+          "name": "creator",
           "writable": true,
           "signer": true
         },
         {
-          "name": "reviewsdotfun",
-          "writable": true
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "decrement",
-      "discriminator": [
-        106,
-        227,
-        168,
-        59,
-        248,
-        27,
-        150,
-        101
-      ],
-      "accounts": [
-        {
-          "name": "reviewsdotfun",
-          "writable": true
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "increment",
-      "discriminator": [
-        11,
-        18,
-        104,
-        9,
-        104,
-        174,
-        59,
-        33
-      ],
-      "accounts": [
-        {
-          "name": "reviewsdotfun",
-          "writable": true
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "initialize",
-      "discriminator": [
-        175,
-        175,
-        109,
-        31,
-        13,
-        152,
-        155,
-        237
-      ],
-      "accounts": [
-        {
-          "name": "payer",
+          "name": "merchantPda",
           "writable": true,
-          "signer": true
-        },
-        {
-          "name": "reviewsdotfun",
-          "writable": true,
-          "signer": true
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  114,
+                  99,
+                  104,
+                  97,
+                  110,
+                  116,
+                  95,
+                  112,
+                  100,
+                  97
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "creator"
+              }
+            ]
+          }
         },
         {
           "name": "systemProgram",
@@ -109,55 +68,128 @@ export type Reviewsdotfun = {
       "args": []
     },
     {
-      "name": "set",
+      "name": "createMint",
       "discriminator": [
-        198,
-        51,
-        53,
-        241,
-        116,
-        29,
-        126,
-        194
+        69,
+        44,
+        215,
+        132,
+        253,
+        214,
+        41,
+        45
       ],
       "accounts": [
         {
-          "name": "reviewsdotfun",
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "metadata",
           "writable": true
+        },
+        {
+          "name": "mint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        },
+        {
+          "name": "tokenProgram"
+        },
+        {
+          "name": "tokenMetadataProgram",
+          "address": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": [
         {
-          "name": "value",
-          "type": "u8"
+          "name": "args",
+          "type": {
+            "defined": {
+              "name": "createMintArgs"
+            }
+          }
         }
       ]
     }
   ],
   "accounts": [
     {
-      "name": "reviewsdotfun",
+      "name": "merchant",
       "discriminator": [
-        255,
-        176,
-        4,
-        245,
-        188,
-        253,
-        124,
-        25
+        71,
+        235,
+        30,
+        40,
+        231,
+        21,
+        32,
+        64
       ]
     }
   ],
   "types": [
     {
-      "name": "reviewsdotfun",
+      "name": "createMintArgs",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "count",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "type": "string"
+          },
+          {
+            "name": "decimals",
             "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "merchant",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
           }
         ]
       }
