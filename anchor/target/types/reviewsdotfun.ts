@@ -107,6 +107,25 @@ export type Reviewsdotfun = {
           }
         },
         {
+          "name": "globalPda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
           "name": "rent",
           "address": "SysvarRent111111111111111111111111111111111"
         },
@@ -135,6 +154,19 @@ export type Reviewsdotfun = {
     }
   ],
   "accounts": [
+    {
+      "name": "global",
+      "discriminator": [
+        167,
+        232,
+        232,
+        177,
+        200,
+        108,
+        114,
+        127
+      ]
+    },
     {
       "name": "merchant",
       "discriminator": [
@@ -169,6 +201,54 @@ export type Reviewsdotfun = {
           },
           {
             "name": "decimals",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "global",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "initialized",
+            "type": "bool"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "feeVault",
+            "type": "pubkey"
+          },
+          {
+            "name": "initialVirtualTokenReserves",
+            "type": "u64"
+          },
+          {
+            "name": "initialVirtualSolReserves",
+            "type": "u64"
+          },
+          {
+            "name": "initialRealTokenReserves",
+            "type": "u64"
+          },
+          {
+            "name": "rewardReserves",
+            "type": "u64"
+          },
+          {
+            "name": "tokenSupply",
+            "type": "u64"
+          },
+          {
+            "name": "feeBasisPt",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
             "type": "u8"
           }
         ]

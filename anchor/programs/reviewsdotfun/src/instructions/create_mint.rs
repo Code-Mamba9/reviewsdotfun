@@ -6,6 +6,7 @@ use anchor_spl::metadata::{
   CreateMetadataAccountsV3, 
   Metadata as Metaplex,
 };
+use crate::state::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct CreateMintArgs {
@@ -43,12 +44,19 @@ pub struct CreateMint<'info> {
       init, 
       payer=signer,
       mint::decimals = 6,
-      mint::authority = mint.key(),
-      mint::freeze_authority = mint.key(),
+      mint::authority = global_pda.key(),
+      mint::freeze_authority = global_pda.key(),
       seeds=[b"mint"],
       bump
     )]
     pub mint: InterfaceAccount<'info, Mint>,
+
+    #[account(
+      mut,
+      seeds=[b"global"],
+      bump=global_pda.bump,
+    )]
+    pub global_pda: Account<'info, Global>,
     pub rent: Sysvar<'info, Rent>,
     pub token_program: Interface<'info, TokenInterface>,
     pub token_metadata_program: Program<'info, Metaplex>,
