@@ -13,6 +13,9 @@ declare_id!("coUnmi3oBUtwtd9fjeAvSsJssXh5A5xyPbhpewyzRVF");
 #[program]
 pub mod reviewsdotfun {
     use super::*;
+    pub fn init_global(ctx: Context<InitGlobal>, args: InitGlobalArgs) -> Result<()> {
+        InitGlobal::init_global(ctx, args)
+    }
     pub fn create_merchant(ctx: Context<CreateMerchant>) -> Result<()> {
         CreateMerchant::create_merchant(ctx)
     }

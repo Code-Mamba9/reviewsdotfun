@@ -3,7 +3,7 @@ use anchor_lang::prelude::*;
 use crate::state::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
-struct InitGlobalArgs {
+pub struct InitGlobalArgs {
   pub authority: Pubkey,
   pub fee_vault: Pubkey
 
@@ -16,7 +16,7 @@ pub struct InitGlobal<'info> {
 
     #[account(
       init, 
-      space=8+Merchant::INIT_SPACE,
+      space=8+Global::INIT_SPACE,
       payer=payer,
       seeds=[b"global"],
       bump
@@ -26,11 +26,11 @@ pub struct InitGlobal<'info> {
 }
 
 impl InitGlobal<'_> {
-    fn validate(&self) -> Result<()> {
-        todo!()
-    }
-
-    #[access_control(ctx.accounts.validate())]
+    //fn validate(&self) -> Result<()> {
+    //    todo!()
+    //}
+    //
+    //#[access_control(ctx.accounts.validate())]
     pub fn init_global(ctx: Context<Self>, args: InitGlobalArgs) -> Result<()> {
       ctx.accounts.global_pda.set_inner(
         Global {  // 75% available to trade, 8% review rewards, 17% merchant controlled
