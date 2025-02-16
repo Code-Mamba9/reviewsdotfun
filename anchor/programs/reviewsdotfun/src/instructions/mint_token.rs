@@ -1,19 +1,18 @@
 use crate::state::*;
 use anchor_lang::prelude::*;
 use anchor_spl::associated_token::AssociatedToken;
-use anchor_spl::token_interface::{Mint, TokenAccount, TokenInterface};
+use anchor_spl::token_interface::{self, Mint, MintTo, TokenAccount, TokenInterface};
 
 #[derive(Accounts)]
-#[instruction(merchant: String)]
+#[instruction(merchant_key: Pubkey)]
 pub struct MintToken<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
 
     #[account(
       mut,
-      seeds=[b"mint"],
+      seeds=[b"mint", &merchant_key.to_bytes()],
       bump,
-      mint::authority=global_pda
     )]
     pub mint: InterfaceAccount<'info, Mint>,
 
@@ -24,17 +23,6 @@ pub struct MintToken<'info> {
     )]
     pub global_pda: Account<'info, Global>,
 
-    //#[account(
-    //  init,
-    //  payer=signer,
-    //  token::mint = mint,
-    //  token::authority = global_token_account,
-    //  seeds=[b"global_token_account", merchant.as_bytes()],
-    //  bump,
-    //)]
-    //pub global_token_account: InterfaceAccount<'info, TokenAccount>,
-    //
-    //
     #[account(
       init_if_needed,
       payer=signer,
@@ -50,12 +38,21 @@ pub struct MintToken<'info> {
 }
 
 impl MintToken<'_> {
-    fn validate(&self) -> Result<()> {
-        todo!()
-    }
-
-    #[access_control(ctx.accounts.validate())]
+    //fn validate(&self) -> Result<()> {
+    //    todo!()
+    //}
+    //
+    //#[access_control(ctx.accounts.validate())]
     pub fn create_mint(ctx: Context<Self>) -> Result<()> {
+        let signer_seeds: &[&[&[u8]]] = &[&[b"global", &[ctx.bumps.mint]]];
+        let cpi_accounts = MintTo {
+            mint: ctx.accounts.mint.to_account_info(),
+            to: ctx.accounts.global_token_account.to_account_info(),
+            authority: ctx.accounts.global_pda.to_account_info(),
+        };
+        let cpi_program = ctx.accounts.token_program.to_account_info();
+        let cpi_context = CpiContext::new(cpi_program, cpi_accounts).with_signer(signer_seeds);
+        token_interface::mint_to(cpi_context, 1_000_000_000_000)?;
         Ok(())
     }
 }

@@ -124,7 +124,8 @@
           "address": "SysvarRent111111111111111111111111111111111"
         },
         {
-          "name": "token_program"
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
         },
         {
           "name": "token_metadata_program",

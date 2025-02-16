@@ -51,5 +51,7 @@ describe("reviewsdotfun", () => {
       "confirmed",
     );
     console.log(globalPdaData);
+    console.log(globalPdaData.rewardReserves.toNumber());
+    expect(globalPdaData.feeVault).toEqual(feeVault.publicKey);
   });
 });

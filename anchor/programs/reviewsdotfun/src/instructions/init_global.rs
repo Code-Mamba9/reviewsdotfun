@@ -26,11 +26,6 @@ pub struct InitGlobal<'info> {
 }
 
 impl InitGlobal<'_> {
-    //fn validate(&self) -> Result<()> {
-    //    todo!()
-    //}
-    //
-    //#[access_control(ctx.accounts.validate())]
     pub fn init_global(ctx: Context<Self>, args: InitGlobalArgs) -> Result<()> {
       ctx.accounts.global_pda.set_inner(
         Global {  // 75% available to trade, 8% review rewards, 17% merchant controlled
@@ -38,7 +33,7 @@ impl InitGlobal<'_> {
           authority: args.authority,
           fee_vault: args.fee_vault,
           initial_virtual_token_reserves: 1_000_000_000,
-          initial_virtual_sol_reserves: 500_000_000, // 0.5 SOL
+          initial_virtual_sol_reserves: 1_000_000_000, // 1 SOL
           initial_real_token_reserves: 750_000_000,
           reward_reserves: 80_000_000,
           token_supply: 1_000_000_000,

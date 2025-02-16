@@ -29,9 +29,10 @@ fn find_metadata_account(mint: &Pubkey) -> (Pubkey, u8) {
 }
 
 #[derive(Accounts)]
-pub struct CreateMint<'info> {
+#[instruction(args: CreateMintArgs)]
+pub struct CreateMint<'info> { 
     #[account(mut)]
-    pub signer: Signer<'info>,
+    pub signer: Signer<'info>, // merchant signer
 
     /// CHECK: mint key, program key and metaplex program id
     #[account(
@@ -44,9 +45,9 @@ pub struct CreateMint<'info> {
       init, 
       payer=signer,
       mint::decimals = 6,
-      mint::authority = global_pda.key(),
-      mint::freeze_authority = global_pda.key(),
-      seeds=[b"mint"],
+      mint::authority = global_pda,
+      mint::freeze_authority = global_pda,
+      seeds=[b"mint", args.name.as_bytes()],
       bump
     )]
     pub mint: InterfaceAccount<'info, Mint>,

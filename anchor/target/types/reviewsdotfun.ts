@@ -130,7 +130,8 @@ export type Reviewsdotfun = {
           "address": "SysvarRent111111111111111111111111111111111"
         },
         {
-          "name": "tokenProgram"
+          "name": "tokenProgram",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
         },
         {
           "name": "tokenMetadataProgram",
