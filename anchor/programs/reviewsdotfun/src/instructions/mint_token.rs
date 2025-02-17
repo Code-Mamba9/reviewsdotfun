@@ -3,15 +3,20 @@ use anchor_lang::prelude::*;
 use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token_interface::{self, Mint, MintTo, TokenAccount, TokenInterface};
 
+#[derive(AnchorSerialize, AnchorDeserialize)]
+pub struct MintTokenArgs {
+    pub merchant_key: Pubkey,
+}
+
 #[derive(Accounts)]
-#[instruction(merchant_key: Pubkey)]
+#[instruction(args: MintTokenArgs)]
 pub struct MintToken<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
 
     #[account(
       mut,
-      seeds=[b"mint", &merchant_key.to_bytes()],
+      seeds=[b"mint", &args.merchant_key.to_bytes()],
       bump,
     )]
     pub mint: InterfaceAccount<'info, Mint>,
@@ -43,7 +48,7 @@ impl MintToken<'_> {
     //}
     //
     //#[access_control(ctx.accounts.validate())]
-    pub fn create_mint(ctx: Context<Self>) -> Result<()> {
+    pub fn mint_token(ctx: Context<Self>, _args: MintTokenArgs) -> Result<()> {
         let signer_seeds: &[&[&[u8]]] = &[&[b"global", &[ctx.bumps.mint]]];
         let cpi_accounts = MintTo {
             mint: ctx.accounts.mint.to_account_info(),

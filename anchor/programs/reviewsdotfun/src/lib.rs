@@ -22,4 +22,11 @@ pub mod reviewsdotfun {
     pub fn create_mint(ctx: Context<CreateMint>, args: CreateMintArgs) -> Result<()> {
         CreateMint::create_mint(ctx, args)
     }
+    pub fn mint_token(ctx: Context<MintToken>, args: MintTokenArgs) -> Result<()> {
+        MintToken::mint_token(ctx, args)
+    }
+
+    pub fn create_pool(ctx: Context<CreatePool>, args: CreatePoolArgs) -> Result<()> {
+        CreatePool::create_pool(ctx, args)
+    }
 }
