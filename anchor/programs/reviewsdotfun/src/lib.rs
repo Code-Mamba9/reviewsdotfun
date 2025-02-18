@@ -25,8 +25,10 @@ pub mod reviewsdotfun {
     pub fn mint_token(ctx: Context<MintToken>, args: MintTokenArgs) -> Result<()> {
         MintToken::mint_token(ctx, args)
     }
-
     pub fn create_pool(ctx: Context<CreatePool>, args: CreatePoolArgs) -> Result<()> {
         CreatePool::create_pool(ctx, args)
+    }
+    pub fn trade(ctx: Context<Trade>, args: TradeArgs) -> Result<()> {
+        Trade::trade(ctx, args)
     }
 }

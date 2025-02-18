@@ -32,9 +32,8 @@ impl InitGlobal<'_> {
           initialized: false,
           authority: args.authority,
           fee_vault: args.fee_vault,
-          initial_virtual_token_reserves: 1_000_000_000,
-          initial_virtual_sol_reserves: 1_000_000_000, // 1 SOL
-          initial_real_token_reserves: 750_000_000,
+          initial_sol_reserve: 1_000_000_000,
+          initial_token_a_reserves: 1_000_000_000,
           reward_reserves: 80_000_000,
           token_supply: 1_000_000_000,
           fee_basis_pt: 30,

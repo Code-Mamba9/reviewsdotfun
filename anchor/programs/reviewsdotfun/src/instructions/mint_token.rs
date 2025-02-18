@@ -29,13 +29,17 @@ pub struct MintToken<'info> {
     pub global_pda: Account<'info, Global>,
 
     #[account(
-      init_if_needed,
-      payer=signer,
-      associated_token::mint = mint,
-      associated_token::authority = global_pda,
-      associated_token::token_program = token_program,
+      associated_token::mint=mint,
+      associated_token::authority=pool,
     )]
-    pub global_token_account: InterfaceAccount<'info, TokenAccount>,
+    pub pool_ata: InterfaceAccount<'info, TokenAccount>,
+
+    #[account(
+      seeds=[b"pool", mint.key().as_ref()],
+      bump=pool.bump
+    )]
+    pub pool: Account<'info, Pool>,
+
     pub rent: Sysvar<'info, Rent>,
     pub token_program: Interface<'info, TokenInterface>,
     pub associated_token_program: Program<'info, AssociatedToken>,
@@ -52,7 +56,7 @@ impl MintToken<'_> {
         let signer_seeds: &[&[&[u8]]] = &[&[b"global", &[ctx.bumps.mint]]];
         let cpi_accounts = MintTo {
             mint: ctx.accounts.mint.to_account_info(),
-            to: ctx.accounts.global_token_account.to_account_info(),
+            to: ctx.accounts.pool_ata.to_account_info(),
             authority: ctx.accounts.global_pda.to_account_info(),
         };
         let cpi_program = ctx.accounts.token_program.to_account_info();

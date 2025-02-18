@@ -5,6 +5,7 @@ pub use init_global::*;
 pub use create_pool::*;
 pub use mint_token::*;
 pub use set_global::*;
+pub use trade::*;
 
 mod create_merchant;
 mod create_mint;
@@ -13,3 +14,4 @@ mod init_global;
 mod create_pool;
 mod mint_token;
 mod set_global;
+mod trade;
