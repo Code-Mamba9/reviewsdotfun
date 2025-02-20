@@ -274,6 +274,24 @@ export type Reviewsdotfun = {
           }
         },
         {
+          "name": "global",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
           "name": "associatedTokenProgram",
           "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
@@ -408,13 +426,299 @@ export type Reviewsdotfun = {
           }
         },
         {
-          "name": "globalTokenAccount",
+          "name": "poolAta",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "pool",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        },
+        {
+          "name": "tokenProgram"
+        },
+        {
+          "name": "associatedTokenProgram",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": {
+              "name": "mintTokenArgs"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "trade",
+      "discriminator": [
+        178,
+        144,
+        26,
+        216,
+        241,
+        187,
+        206,
+        130
+      ],
+      "accounts": [
+        {
+          "name": "trader",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "mint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "args.merchant_key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "poolAta",
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "account",
-                "path": "globalPda"
+                "path": "pool"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "traderAta",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "trader"
               },
               {
                 "kind": "account",
@@ -465,15 +769,11 @@ export type Reviewsdotfun = {
           }
         },
         {
-          "name": "rent",
-          "address": "SysvarRent111111111111111111111111111111111"
+          "name": "associatedTokenProgram",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
           "name": "tokenProgram"
-        },
-        {
-          "name": "associatedTokenProgram",
-          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
           "name": "systemProgram",
@@ -485,7 +785,7 @@ export type Reviewsdotfun = {
           "name": "args",
           "type": {
             "defined": {
-              "name": "mintTokenArgs"
+              "name": "tradeArgs"
             }
           }
         }
@@ -531,6 +831,28 @@ export type Reviewsdotfun = {
         109,
         188
       ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "insufficientBalance",
+      "msg": "Pool runs out of reserve"
+    },
+    {
+      "code": 6001,
+      "name": "insufficientLamports",
+      "msg": "Account doesnt have enough SOL"
+    },
+    {
+      "code": 6002,
+      "name": "calculationError",
+      "msg": "Pool calculation Error"
+    },
+    {
+      "code": 6003,
+      "name": "overFlowU64",
+      "msg": "Input amount too big"
     }
   ],
   "types": [
@@ -588,15 +910,11 @@ export type Reviewsdotfun = {
             "type": "pubkey"
           },
           {
-            "name": "initialVirtualTokenReserves",
+            "name": "initialSolReserve",
             "type": "u64"
           },
           {
-            "name": "initialVirtualSolReserves",
-            "type": "u64"
-          },
-          {
-            "name": "initialRealTokenReserves",
+            "name": "initialTokenAReserves",
             "type": "u64"
           },
           {
@@ -676,12 +994,48 @@ export type Reviewsdotfun = {
             "type": "pubkey"
           },
           {
-            "name": "virtualSolAmount",
+            "name": "poolSolAmount",
             "type": "u64"
           },
           {
-            "name": "virtualAAmount",
+            "name": "poolAAmount",
             "type": "u64"
+          },
+          {
+            "name": "rewardAAmount",
+            "type": "u64"
+          },
+          {
+            "name": "k",
+            "type": "u64"
+          },
+          {
+            "name": "fee",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "tradeArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "merchantKey",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "buy",
+            "type": "bool"
           }
         ]
       }

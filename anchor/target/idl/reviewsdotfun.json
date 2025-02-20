@@ -268,6 +268,24 @@
           }
         },
         {
+          "name": "global",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
           "name": "associated_token_program",
           "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
@@ -402,13 +420,299 @@
           }
         },
         {
-          "name": "global_token_account",
+          "name": "pool_ata",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "pool",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": {
+              "name": "MintTokenArgs"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "trade",
+      "discriminator": [
+        178,
+        144,
+        26,
+        216,
+        241,
+        187,
+        206,
+        130
+      ],
+      "accounts": [
+        {
+          "name": "trader",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "mint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "args.merchant_key"
+              }
+            ]
+          }
+        },
+        {
+          "name": "pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "pool_ata",
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "account",
-                "path": "global_pda"
+                "path": "pool"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "trader_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "trader"
               },
               {
                 "kind": "account",
@@ -459,15 +763,11 @@
           }
         },
         {
-          "name": "rent",
-          "address": "SysvarRent111111111111111111111111111111111"
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
           "name": "token_program"
-        },
-        {
-          "name": "associated_token_program",
-          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
           "name": "system_program",
@@ -479,7 +779,7 @@
           "name": "args",
           "type": {
             "defined": {
-              "name": "MintTokenArgs"
+              "name": "TradeArgs"
             }
           }
         }
@@ -525,6 +825,28 @@
         109,
         188
       ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InsufficientBalance",
+      "msg": "Pool runs out of reserve"
+    },
+    {
+      "code": 6001,
+      "name": "InsufficientLamports",
+      "msg": "Account doesnt have enough SOL"
+    },
+    {
+      "code": 6002,
+      "name": "CalculationError",
+      "msg": "Pool calculation Error"
+    },
+    {
+      "code": 6003,
+      "name": "OverFlowU64",
+      "msg": "Input amount too big"
     }
   ],
   "types": [
@@ -582,15 +904,11 @@
             "type": "pubkey"
           },
           {
-            "name": "initial_virtual_token_reserves",
+            "name": "initial_sol_reserve",
             "type": "u64"
           },
           {
-            "name": "initial_virtual_sol_reserves",
-            "type": "u64"
-          },
-          {
-            "name": "initial_real_token_reserves",
+            "name": "initial_token_a_reserves",
             "type": "u64"
           },
           {
@@ -670,12 +988,48 @@
             "type": "pubkey"
           },
           {
-            "name": "virtual_sol_amount",
+            "name": "pool_sol_amount",
             "type": "u64"
           },
           {
-            "name": "virtual_a_amount",
+            "name": "pool_a_amount",
             "type": "u64"
+          },
+          {
+            "name": "reward_a_amount",
+            "type": "u64"
+          },
+          {
+            "name": "k",
+            "type": "u64"
+          },
+          {
+            "name": "fee",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TradeArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "merchant_key",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "buy",
+            "type": "bool"
           }
         ]
       }

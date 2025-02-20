@@ -1,3 +1,4 @@
+use crate::{error::*, errors::ReviewFunError};
 use anchor_lang::prelude::*;
 use fixed::types::I64F64;
 
@@ -9,22 +10,20 @@ pub struct Pool {
     pub pool_a_amount: u64,
     pub reward_a_amount: u64,
     pub k: u64,
+    pub fee: u8,
     pub bump: u8,
 }
 
 impl Pool {
-    pub fn buy(&self, amount: u64, fee: u8) -> Option<u64> {
-        self.calculate(false, amount, fee)
-    }
-
-    pub fn sell(&self, amount: u64, fee: u8) -> Option<u64> {
-        self.calculate(true, amount, fee)
-    }
-
-    fn calculate(&self, is_sol: bool, amount: u64, fee: u8) -> Option<u64> {
-        let dy = match is_sol {
-            true => self.pool_a_amount,
-            false => self.pool_sol_amount,
+    pub fn calculate(
+        &self,
+        buy_a: bool,
+        amount: u64,
+        fee: u8,
+    ) -> std::result::Result<u64, ReviewFunError> {
+        let dy = match buy_a {
+            true => self.pool_sol_amount,
+            false => self.pool_a_amount,
         };
         let taxed_input = amount - amount * fee as u64 / 10000;
         let output = I64F64::from_num(taxed_input)
@@ -38,6 +37,6 @@ impl Pool {
             .unwrap()
             .to_num::<u64>();
 
-        Some(output)
+        Ok(output)
     }
 }

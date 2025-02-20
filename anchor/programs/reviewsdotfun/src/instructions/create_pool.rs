@@ -54,6 +54,7 @@ impl CreatePool<'_> {
         pool_a_amount: ctx.accounts.global.initial_token_a_reserves,
         reward_a_amount: ctx.accounts.global.reward_reserves,
         k: ctx.accounts.global.initial_sol_reserve.checked_mul(ctx.accounts.global.initial_token_a_reserves).unwrap(), // TODO: Handles potential overflow
+        fee: ctx.accounts.global.fee_basis_pt,
         bump: ctx.bumps.pool,
       });
       Ok(())

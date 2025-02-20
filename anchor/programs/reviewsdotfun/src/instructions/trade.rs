@@ -1,3 +1,5 @@
+use crate::error::*;
+use crate::errors::ReviewFunError;
 use crate::state::*;
 use anchor_lang::prelude::*;
 use anchor_spl::{
@@ -33,6 +35,13 @@ pub struct Trade<'info> {
     pub pool: Account<'info, Pool>,
 
     #[account(
+      mut, 
+      associated_token::mint=mint,
+      associated_token::authority=pool,
+    )]
+    pub pool_ata: InterfaceAccount<'info, TokenAccount>,
+
+    #[account(
       init_if_needed,
       payer=trader,
       associated_token::mint = mint,
@@ -48,7 +57,22 @@ pub struct Trade<'info> {
 impl Trade<'_> {
     pub fn trade(ctx: Context<Self>, args: TradeArgs) -> Result<()> {
         let pool = &mut ctx.accounts.pool;
-
+        let output_amount: u64 = pool.calculate(args.buy, args.amount, pool.fee).unwrap(); // TODO: Error Handling
+        let trader_accountinfo = ctx.accounts.trader.to_account_info();
+        let mut trader_lamports = trader_accountinfo.try_borrow_mut_lamports()?;
+        if args.buy {
+            let transfer_amount: u64 = args
+                .amount
+                .checked_mul(1_000_000_000)
+                .ok_or(ReviewFunError::OverFlowU64)?;
+            require!(
+                **trader_lamports > transfer_amount,
+                ReviewFunError::InsufficientLamports
+            );
+            **trader_lamports -= transfer_amount;
+            let pool_accountinfo = ctx.accounts.pool.to_account_info();
+            **pool_accountinfo.try_borrow_mut_lamports()? += transfer_amount;
+        }
         Ok(())
     }
 }
