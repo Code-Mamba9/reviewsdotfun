@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
 //use crate::errors::*;
 use crate::state::*;
+use crate::constant::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct InitGlobalArgs {
@@ -32,11 +33,11 @@ impl InitGlobal<'_> {
           initialized: false,
           authority: args.authority,
           fee_vault: args.fee_vault,
-          initial_sol_reserve: 1_000_000_000,
-          initial_token_a_reserves: 1_000_000_000,
-          reward_reserves: 80_000_000,
-          token_supply: 1_000_000_000,
-          fee_basis_pt: 30,
+          initial_sol_reserve: INITIAL_SOL_RESERVE,
+          initial_token_a_reserves: INITIAL_TOKEN_A_RESERVES,
+          reward_reserves: REWARD_RESERVES,
+          token_supply: TOKEN_SUPPLY,
+          fee_basis_pt: FEE_BASIS_PT,
           bump: ctx.bumps.global_pda,
         }
       );

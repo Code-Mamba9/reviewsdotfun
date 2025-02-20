@@ -47,6 +47,8 @@ pub struct Trade<'info> {
 
 impl Trade<'_> {
     pub fn trade(ctx: Context<Self>, args: TradeArgs) -> Result<()> {
+        let pool = &mut ctx.accounts.pool;
+
         Ok(())
     }
 }

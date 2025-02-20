@@ -50,10 +50,11 @@ impl CreatePool<'_> {
     pub fn create_pool(ctx: Context<Self>, _args: CreatePoolArgs) -> Result<()> {
       ctx.accounts.pool.set_inner(Pool {
         mint_a: ctx.accounts.mint.key(),
-        sol_amount: ctx.accounts.global.initial_sol_reserve,
-        a_amount: ctx.accounts.global.initial_token_a_reserves,
-        bump: ctx.bumps.pool,
+        pool_sol_amount: ctx.accounts.global.initial_sol_reserve,
+        pool_a_amount: ctx.accounts.global.initial_token_a_reserves,
+        reward_a_amount: ctx.accounts.global.reward_reserves,
         k: ctx.accounts.global.initial_sol_reserve.checked_mul(ctx.accounts.global.initial_token_a_reserves).unwrap(), // TODO: Handles potential overflow
+        bump: ctx.bumps.pool,
       });
       Ok(())
     }

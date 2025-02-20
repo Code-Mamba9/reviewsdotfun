@@ -1,0 +1,5 @@
+pub const INITIAL_SOL_RESERVE: u64 = 750_000_000;
+pub const INITIAL_TOKEN_A_RESERVES: u64 = 1_000_000_000;
+pub const REWARD_RESERVES: u64 = 80_000_000;
+pub const TOKEN_SUPPLY: u64 = 1_000_000_000;
+pub const FEE_BASIS_PT: u8 = 30;

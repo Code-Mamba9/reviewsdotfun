@@ -1,4 +1,4 @@
-use crate::state::*;
+use crate::{constant::*, state::*};
 use anchor_lang::prelude::*;
 use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token_interface::{self, Mint, MintTo, TokenAccount, TokenInterface};
@@ -61,7 +61,7 @@ impl MintToken<'_> {
         };
         let cpi_program = ctx.accounts.token_program.to_account_info();
         let cpi_context = CpiContext::new(cpi_program, cpi_accounts).with_signer(signer_seeds);
-        token_interface::mint_to(cpi_context, 1_000_000_000_000)?;
+        token_interface::mint_to(cpi_context, TOKEN_SUPPLY)?;
         Ok(())
     }
 }
