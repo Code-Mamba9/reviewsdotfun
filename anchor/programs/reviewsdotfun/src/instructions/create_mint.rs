@@ -32,21 +32,21 @@ pub struct CreateMint<'info> {
       init, 
       payer=signer,
       mint::decimals = 6,
-      //mint::authority = global_pda,
-      //mint::freeze_authority = global_pda,
-      mint::authority=signer,
-      mint::freeze_authority=signer,
+      mint::authority = global_pda.key(),
+      mint::freeze_authority = global_pda.key(),
+      //mint::authority=signer,
+      //mint::freeze_authority=signer,
       seeds=[b"mint", args.name.as_bytes()],
       bump
     )]
     pub mint: InterfaceAccount<'info, Mint>,
 
-    //#[account(
-    //  mut,
-    //  seeds=[b"global"],
-    //  bump=global_pda.bump,
-    //)]
-    //pub global_pda: Account<'info, Global>,
+    #[account(
+      mut,
+      seeds=[b"global"],
+      bump=global_pda.bump,
+    )]
+    pub global_pda: Account<'info, Global>,
     pub rent: Sysvar<'info, Rent>,
     pub token_program: Interface<'info, TokenInterface>,
     pub token_metadata_program: Program<'info, Metadata>,
@@ -62,7 +62,9 @@ impl CreateMint<'_> {
     pub fn create_mint(ctx: Context<Self>, args: CreateMintArgs) -> Result<()> {
       msg!("Ready to init data!");
       let CreateMintArgs { name, symbol, uri, decimals } = args;
-      let seeds = &["mint".as_bytes(), name.as_bytes(), &[ctx.bumps.mint]];
+      //let seeds = &["mint".as_bytes(), name.as_bytes(), &[ctx.bumps.mint]];
+      let global_bump = ctx.accounts.global_pda.bump;
+      let seeds = &["global".as_bytes(), &[global_bump]];
       let signer = [&seeds[..]];
 
 
@@ -81,10 +83,10 @@ impl CreateMint<'_> {
         ctx.accounts.token_metadata_program.to_account_info(),
         CreateMetadataAccountsV3 {
           payer: ctx.accounts.signer.to_account_info(),
-          update_authority: ctx.accounts.mint.to_account_info(),
+          update_authority: ctx.accounts.global_pda.to_account_info(),
           mint: ctx.accounts.mint.to_account_info(),
           metadata: ctx.accounts.metadata.to_account_info(),
-          mint_authority: ctx.accounts.signer.to_account_info(),
+          mint_authority: ctx.accounts.global_pda.to_account_info(),
           system_program: ctx.accounts.system_program.to_account_info(),
           rent: ctx.accounts.rent.to_account_info(),
         },

@@ -111,6 +111,25 @@ export type Reviewsdotfun = {
           }
         },
         {
+          "name": "globalPda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
           "name": "rent",
           "address": "SysvarRent111111111111111111111111111111111"
         },

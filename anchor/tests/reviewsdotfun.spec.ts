@@ -98,6 +98,7 @@ import { TOKEN_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import IDL from "../target/idl/reviewsdotfun.json";
 import { Reviewsdotfun } from "../target/types/reviewsdotfun";
+import { PublicKey, Keypair, SystemProgram, Connection } from "@solana/web3.js";
 describe("reviewsdotfun", () => {
   // Configure the client to use the local cluster.
   const provider = anchor.AnchorProvider.env();
@@ -112,8 +113,26 @@ describe("reviewsdotfun", () => {
   );
 
   it("Is initialized!", async () => {
-    const slot = await connection.getSlot();
-    console.log("Current slot", slot);
+    const feeVault = new anchor.web3.Keypair();
+    const authority = new anchor.web3.Keypair();
+
+    const [globalPda] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("global")],
+      program.programId,
+    );
+
+    console.log("Pre fetching");
+    await program.methods
+      .initGlobal({
+        feeVault: feeVault.publicKey,
+        authority: authority.publicKey,
+      })
+      .accounts({ payer: provider.wallet.publicKey })
+      .rpc({ skipPreflight: true, commitment: "confirmed" });
+    console.log("Post fetching");
+
+    // const slot = await connection.getSlot();
+    // console.log("Current slot", slot);
 
     const mint = anchor.web3.PublicKey.findProgramAddressSync(
       [Buffer.from("mint"), Buffer.from("TESTING")],
@@ -157,6 +176,11 @@ describe("reviewsdotfun", () => {
     const sig = await anchor.web3.sendAndConfirmTransaction(connection, tx, [
       wallet.payer,
     ]);
-    console.log(sig);
+    const globalPdaData = await program.account.global.fetch(
+      globalPda,
+      "confirmed",
+    );
+    console.log(globalPdaData);
+    // console.log(sig);
   });
 });

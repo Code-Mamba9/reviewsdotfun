@@ -28,6 +28,7 @@ pub struct InitGlobal<'info> {
 
 impl InitGlobal<'_> {
     pub fn init_global(ctx: Context<Self>, args: InitGlobalArgs) -> Result<()> {
+      msg!("Starting to init");
       ctx.accounts.global_pda.set_inner(
         Global {  // 75% available to trade, 8% review rewards, 17% merchant controlled
           initialized: false,
@@ -41,6 +42,7 @@ impl InitGlobal<'_> {
           bump: ctx.bumps.global_pda,
         }
       );
+      msg!("Done to init");
       Ok(())
     }
 }
