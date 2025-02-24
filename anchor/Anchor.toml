@@ -6,7 +6,7 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-reviewsdotfun = "coUnmi3oBUtwtd9fjeAvSsJssXh5A5xyPbhpewyzRVF"
+reviewsdotfun = "FriAJA7uFN9zTeDcLZ91jxEXVHavYBa4UXddBUxGf5Vw"
 
 [registry]
 url = "https://api.apr.dev"
@@ -27,3 +27,8 @@ upgradeable = false
 bind_address = "127.0.0.1"
 ledger = ".anchor/test-ledger"
 rpc_port = 8899
+
+
+[[test.validator.clone]]
+address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+program = "./programs/reviewsdotfun/mpl_token_metadata.so"

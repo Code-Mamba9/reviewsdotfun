@@ -10,7 +10,7 @@ pub mod errors;
 pub mod instructions;
 pub mod state;
 
-declare_id!("coUnmi3oBUtwtd9fjeAvSsJssXh5A5xyPbhpewyzRVF");
+declare_id!("FriAJA7uFN9zTeDcLZ91jxEXVHavYBa4UXddBUxGf5Vw");
 
 #[program]
 pub mod reviewsdotfun {

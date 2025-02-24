@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/reviewsdotfun.json`.
  */
 export type Reviewsdotfun = {
-  "address": "coUnmi3oBUtwtd9fjeAvSsJssXh5A5xyPbhpewyzRVF",
+  "address": "FriAJA7uFN9zTeDcLZ91jxEXVHavYBa4UXddBUxGf5Vw",
   "metadata": {
     "name": "reviewsdotfun",
     "version": "0.1.0",
@@ -106,25 +106,6 @@ export type Reviewsdotfun = {
               {
                 "kind": "arg",
                 "path": "args.name"
-              }
-            ]
-          }
-        },
-        {
-          "name": "globalPda",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  103,
-                  108,
-                  111,
-                  98,
-                  97,
-                  108
-                ]
               }
             ]
           }

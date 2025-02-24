@@ -4,7 +4,7 @@ use anchor_spl::metadata::{
   create_metadata_accounts_v3,
   mpl_token_metadata::types::DataV2,
   CreateMetadataAccountsV3, 
-  Metadata as Metaplex,
+  Metadata
 };
 use crate::state::*;
 
@@ -16,18 +16,6 @@ pub struct CreateMintArgs {
   pub decimals: u8,
 }
 
-pub const PREFIX: &str = "metadata";
-fn find_metadata_account(mint: &Pubkey) -> (Pubkey, u8) {
-  Pubkey::find_program_address(
-    &[
-        PREFIX.as_bytes(),
-        mpl_token_metadata::ID.as_ref(),
-        mint.as_ref(),
-    ],
-    &mpl_token_metadata::ID,
-  )
-}
-
 #[derive(Accounts)]
 #[instruction(args: CreateMintArgs)]
 pub struct CreateMint<'info> { 
@@ -36,8 +24,7 @@ pub struct CreateMint<'info> {
 
     /// CHECK: mint key, program key and metaplex program id
     #[account(
-      mut,
-      address=find_metadata_account(&mint.key()).0,
+      mut
     )]
     pub metadata: UncheckedAccount<'info>,
 
@@ -45,45 +32,51 @@ pub struct CreateMint<'info> {
       init, 
       payer=signer,
       mint::decimals = 6,
-      mint::authority = global_pda,
-      mint::freeze_authority = global_pda,
+      //mint::authority = global_pda,
+      //mint::freeze_authority = global_pda,
+      mint::authority=signer,
+      mint::freeze_authority=signer,
       seeds=[b"mint", args.name.as_bytes()],
       bump
     )]
     pub mint: InterfaceAccount<'info, Mint>,
 
-    #[account(
-      mut,
-      seeds=[b"global"],
-      bump=global_pda.bump,
-    )]
-    pub global_pda: Account<'info, Global>,
+    //#[account(
+    //  mut,
+    //  seeds=[b"global"],
+    //  bump=global_pda.bump,
+    //)]
+    //pub global_pda: Account<'info, Global>,
     pub rent: Sysvar<'info, Rent>,
     pub token_program: Interface<'info, TokenInterface>,
-    pub token_metadata_program: Program<'info, Metaplex>,
+    pub token_metadata_program: Program<'info, Metadata>,
     pub system_program: Program<'info, System>,
 }
 
 impl CreateMint<'_> {
-    fn validate(&self) -> Result<()> {
-        todo!()
-    }
-
-    #[access_control(ctx.accounts.validate())]
+    //fn validate(&self) -> Result<()> {
+    //    todo!()
+    //}
+    //
+    //#[access_control(ctx.accounts.validate())]
     pub fn create_mint(ctx: Context<Self>, args: CreateMintArgs) -> Result<()> {
-      let seeds = &["mint".as_bytes(), &[ctx.bumps.mint]];
+      msg!("Ready to init data!");
+      let CreateMintArgs { name, symbol, uri, decimals } = args;
+      let seeds = &["mint".as_bytes(), name.as_bytes(), &[ctx.bumps.mint]];
       let signer = [&seeds[..]];
 
+
       let token_data: DataV2 = DataV2 {
-        name:  args.name,
-        symbol: args.symbol,
-        uri: args.uri,
+        name: name.clone(),
+        symbol,
+        uri,
         seller_fee_basis_points: 10,
         creators: None,
         collection: None,
         uses: None,
       };
 
+      msg!("Declared");
       let metadata_ctx = CpiContext::new_with_signer(
         ctx.accounts.token_metadata_program.to_account_info(),
         CreateMetadataAccountsV3 {
@@ -91,12 +84,13 @@ impl CreateMint<'_> {
           update_authority: ctx.accounts.mint.to_account_info(),
           mint: ctx.accounts.mint.to_account_info(),
           metadata: ctx.accounts.metadata.to_account_info(),
-          mint_authority: ctx.accounts.mint.to_account_info(),
+          mint_authority: ctx.accounts.signer.to_account_info(),
           system_program: ctx.accounts.system_program.to_account_info(),
           rent: ctx.accounts.rent.to_account_info(),
         },
         &signer
       );
+      msg!("Context ready");
 
       create_metadata_accounts_v3(
         metadata_ctx,
