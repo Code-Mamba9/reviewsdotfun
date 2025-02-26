@@ -14,6 +14,7 @@ pub struct CreateMintArgs {
   pub symbol: String,
   pub uri: String,
   pub decimals: u8,
+  pub merchant_key: Pubkey
 }
 
 #[derive(Accounts)]
@@ -36,7 +37,7 @@ pub struct CreateMint<'info> {
       mint::freeze_authority = global_pda.key(),
       //mint::authority=signer,
       //mint::freeze_authority=signer,
-      seeds=[b"mint", args.name.as_bytes()],
+      seeds=[b"mint", args.merchant_key.as_ref()],
       bump
     )]
     pub mint: InterfaceAccount<'info, Mint>,
@@ -61,7 +62,7 @@ impl CreateMint<'_> {
     //#[access_control(ctx.accounts.validate())]
     pub fn create_mint(ctx: Context<Self>, args: CreateMintArgs) -> Result<()> {
       msg!("Ready to init data!");
-      let CreateMintArgs { name, symbol, uri, decimals } = args;
+      let CreateMintArgs { name, symbol, uri, .. } = args;
       //let seeds = &["mint".as_bytes(), name.as_bytes(), &[ctx.bumps.mint]];
       let global_bump = ctx.accounts.global_pda.bump;
       let seeds = &["global".as_bytes(), &[global_bump]];

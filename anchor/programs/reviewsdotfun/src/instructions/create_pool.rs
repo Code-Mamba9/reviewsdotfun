@@ -15,8 +15,6 @@ pub struct CreatePool<'info> {
 
     #[account(
       mut,
-      seeds=[b"mint", args.merchant_key.as_ref()],
-      bump,
     )]
     pub mint: InterfaceAccount<'info, Mint>,
     #[account(

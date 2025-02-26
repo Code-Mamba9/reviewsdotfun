@@ -105,7 +105,7 @@ export type Reviewsdotfun = {
               },
               {
                 "kind": "arg",
-                "path": "args.name"
+                "path": "args.merchant_key"
               }
             ]
           }
@@ -176,24 +176,7 @@ export type Reviewsdotfun = {
         },
         {
           "name": "mint",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  109,
-                  105,
-                  110,
-                  116
-                ]
-              },
-              {
-                "kind": "arg",
-                "path": "args.merchant_key"
-              }
-            ]
-          }
+          "writable": true
         },
         {
           "name": "pool",
@@ -876,6 +859,10 @@ export type Reviewsdotfun = {
           {
             "name": "decimals",
             "type": "u8"
+          },
+          {
+            "name": "merchantKey",
+            "type": "pubkey"
           }
         ]
       }

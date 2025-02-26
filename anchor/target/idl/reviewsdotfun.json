@@ -99,7 +99,7 @@
               },
               {
                 "kind": "arg",
-                "path": "args.name"
+                "path": "args.merchant_key"
               }
             ]
           }
@@ -170,24 +170,7 @@
         },
         {
           "name": "mint",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  109,
-                  105,
-                  110,
-                  116
-                ]
-              },
-              {
-                "kind": "arg",
-                "path": "args.merchant_key"
-              }
-            ]
-          }
+          "writable": true
         },
         {
           "name": "pool",
@@ -870,6 +853,10 @@
           {
             "name": "decimals",
             "type": "u8"
+          },
+          {
+            "name": "merchant_key",
+            "type": "pubkey"
           }
         ]
       }
