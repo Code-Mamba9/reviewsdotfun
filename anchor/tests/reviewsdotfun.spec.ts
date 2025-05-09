@@ -106,7 +106,6 @@ describe("reviewsdotfun", () => {
 
     const poolContext = {
       mint,
-      signer: merchant.publicKey,
       tokenProgram: TOKEN_PROGRAM_ID,
     };
     let mintAcc = await getMint(connection, mint);
@@ -114,14 +113,22 @@ describe("reviewsdotfun", () => {
     console.log(poolContext);
     console.log(mintAcc);
 
-    // await program2.methods
-    //   .createPool({
-    //     merchantKey: merchant.publicKey,
-    //   })
-    //   .accounts(poolContext)
-    //   .signers([merchant])
-    //   .rpc({ skipPreflight: true, commitment: "confirmed" });
-    //
+    await program.methods
+      .createPool({
+        merchantKey: merchant.publicKey,
+      })
+      .accounts(poolContext)
+      .rpc({ skipPreflight: true, commitment: "confirmed" });
+    const [pool] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("pool"), mint.toBuffer()],
+      program.programId,
+    );
+
+    console.log(
+      "-------------------------------------------------------------------------------------------",
+    );
+    console.log(pool);
+
     // const globalPdaData = await program.account.global.fetch(
     //   globalPda,
     //   "confirmed",

@@ -1,6 +1,7 @@
-use crate::state::*;
+use crate::{errors::ReviewFunError, state::*, SOL_BOOTSTRAP_LAMPORTS};
 use anchor_lang::prelude::*;
 use anchor_spl::{associated_token::AssociatedToken, token_interface::{Mint, TokenAccount, TokenInterface}};
+use solana_program::system_instruction;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct CreatePoolArgs {
@@ -57,6 +58,24 @@ impl CreatePool<'_> {
         bump: ctx.bumps.pool,
         complete: false
       });
+      msg!("CreatePool: pool created!");
+      
+      require!(ctx.accounts.signer.lamports() > SOL_BOOTSTRAP_LAMPORTS, ReviewFunError::BootStrapError);
+      let bootstrap_lp_ix = system_instruction::transfer(
+        ctx.accounts.signer.key,
+        &ctx.accounts.pool.key(),
+        SOL_BOOTSTRAP_LAMPORTS
+      );
+      solana_program::program::invoke_signed(
+        &bootstrap_lp_ix,
+        &[
+          ctx.accounts.signer.to_account_info(),
+          ctx.accounts.pool.to_account_info(),
+          ctx.accounts.system_program.to_account_info(),
+        ],
+        &[]
+      )?;
+      msg!("CreatePool: Bootstrap 1 SOL succeeded!");
       Ok(())
     }
 }
