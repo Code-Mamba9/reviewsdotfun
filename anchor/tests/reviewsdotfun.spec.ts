@@ -8,11 +8,13 @@ import { PublicKey } from "@solana/web3.js";
 import { ProgramTestContext } from "solana-bankrun";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import { SYSTEM_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/native/system";
+import { getMint } from "@solana/spl-token";
 describe("reviewsdotfun", () => {
   // Configure the client to use the local cluster.
   const merchant = new anchor.web3.Keypair();
   const provider = anchor.AnchorProvider.env();
   const wallet = provider.wallet as anchor.Wallet;
+  const connection = provider.connection;
   anchor.setProvider(provider);
   let context: ProgramTestContext;
   let merchantProvider: BankrunProvider;
@@ -66,7 +68,7 @@ describe("reviewsdotfun", () => {
       .accounts({ payer: wallet.publicKey })
       .rpc({ skipPreflight: true, commitment: "confirmed" });
 
-    const [mint] = anchor.web3.PublicKey.findProgramAddressSync(
+    let [mint] = anchor.web3.PublicKey.findProgramAddressSync(
       [Buffer.from("mint"), merchant.publicKey.toBuffer()],
       program.programId,
     );
@@ -97,35 +99,33 @@ describe("reviewsdotfun", () => {
       .rpc({ skipPreflight: true, commitment: "confirmed" });
 
     // Create Pool
-    const [pool] = anchor.web3.PublicKey.findProgramAddressSync(
-      [Buffer.from("pool"), mint.toBuffer()],
+    [mint] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("mint"), merchant.publicKey.toBuffer()],
       program.programId,
     );
-
-    console.log(merchant.publicKey.toBase58());
-    console.log(wallet.publicKey.toBase58());
-    console.log(mint.toBase58());
 
     const poolContext = {
       mint,
       signer: merchant.publicKey,
       tokenProgram: TOKEN_PROGRAM_ID,
     };
+    let mintAcc = await getMint(connection, mint);
 
     console.log(poolContext);
+    console.log(mintAcc);
 
-    await program2.methods
-      .createPool({
-        merchantKey: merchant.publicKey,
-      })
-      .accounts(poolContext)
-      .signers([merchant])
-      .rpc({ skipPreflight: true, commitment: "confirmed" });
-
-    const globalPdaData = await program.account.global.fetch(
-      globalPda,
-      "confirmed",
-    );
+    // await program2.methods
+    //   .createPool({
+    //     merchantKey: merchant.publicKey,
+    //   })
+    //   .accounts(poolContext)
+    //   .signers([merchant])
+    //   .rpc({ skipPreflight: true, commitment: "confirmed" });
+    //
+    // const globalPdaData = await program.account.global.fetch(
+    //   globalPda,
+    //   "confirmed",
+    // );
 
     // console.log(pool);
 

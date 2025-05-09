@@ -1,31 +1,29 @@
-use crate::error::*;
+use crate::{error::*, MIN_OUT_TOKEN};
 use crate::errors::ReviewFunError;
 use crate::state::*;
 use anchor_lang::prelude::*;
 use anchor_spl::{
-    associated_token::AssociatedToken,
-    token_interface::{Mint, TokenAccount, TokenInterface},
+    associated_token::AssociatedToken, token, token_interface::{transfer_checked, Mint, TokenAccount, TokenInterface, TransferChecked}
 };
+use solana_program::system_instruction;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct TradeArgs {
-    pub merchant_key: Pubkey,
     pub amount: u64,
     pub buy: bool,
 }
 
 #[derive(Accounts)]
-#[instruction(args: TradeArgs)]
+#[instruction()]
 pub struct Trade<'info> {
     #[account(mut)]
     pub trader: Signer<'info>,
 
-    #[account(
-      mut,
-      seeds=[b"mint", args.merchant_key.as_ref()],
-      bump,
-    )]
-    pub mint: InterfaceAccount<'info, Mint>,
+    #[account(mut)]
+    /// CHECK: fee reciever asserted in validation function
+    pub fee_vault: AccountInfo<'info>,
+
+    mint: InterfaceAccount<'info, Mint>,
 
     #[account(
       mut,
@@ -57,21 +55,68 @@ pub struct Trade<'info> {
 impl Trade<'_> {
     pub fn trade(ctx: Context<Self>, args: TradeArgs) -> Result<()> {
         let pool = &mut ctx.accounts.pool;
-        let output_amount: u64 = pool.calculate(args.buy, args.amount, pool.fee).unwrap(); // TODO: Error Handling
-        let trader_accountinfo = ctx.accounts.trader.to_account_info();
-        let mut trader_lamports = trader_accountinfo.try_borrow_mut_lamports()?;
-        if args.buy {
-            let transfer_amount: u64 = args
-                .amount
-                .checked_mul(1_000_000_000)
-                .ok_or(ReviewFunError::OverFlowU64)?;
-            require!(
-                **trader_lamports > transfer_amount,
-                ReviewFunError::InsufficientLamports
-            );
-            **trader_lamports -= transfer_amount;
-            let pool_accountinfo = ctx.accounts.pool.to_account_info();
-            **pool_accountinfo.try_borrow_mut_lamports()? += transfer_amount;
+        let TradeArgs{ amount, buy } = args;
+        if buy {
+          // buy token using sol
+          let buy_result = pool.apply_buy(amount).ok_or(ReviewFunError::BuyError)?;
+          let BuyResult { token_amount, sol_lamports, .. } = buy_result;
+          let fee = pool.calc_fee(sol_lamports)?;
+          msg!("Buy token fee is {}", fee);
+
+
+          // complete user buy
+          require!(token_amount >= MIN_OUT_TOKEN, ReviewFunError::SlippageExceeded);
+          let trader = &ctx.accounts.trader;
+          require!(trader.get_lamports() >= fee, ReviewFunError::InsufficientBalance);
+
+          // transfer token to trader
+          let cpi_accounts = TransferChecked {
+            from: ctx.accounts.pool_ata.to_account_info(),
+            authority: ctx.accounts.pool.to_account_info(),
+            to: ctx.accounts.trader_ata.to_account_info(),
+            mint: ctx.accounts.mint.to_account_info(),
+          };
+
+          let signer = &[
+            b"pool",
+            ctx.accounts.mint.to_account_info().key.as_ref(),
+            &[ctx.accounts.pool.bump]
+          ];
+          let signer_seeds = [&signer[..]];
+          let cpi_ctx = CpiContext::new_with_signer(ctx.accounts.token_program.to_account_info(), cpi_accounts, &signer_seeds);
+          transfer_checked(cpi_ctx, token_amount, ctx.accounts.mint.decimals)?;
+          // transfer sol to bonding curve and fee vault
+          let transfer_pool_ix = system_instruction::transfer(
+            ctx.accounts.trader.key,
+            &ctx.accounts.pool.key(),
+            sol_lamports,
+          );
+          solana_program::program::invoke_signed(
+            &transfer_pool_ix,
+            &[
+              ctx.accounts.trader.to_account_info(),
+              ctx.accounts.pool.to_account_info(),
+              ctx.accounts.system_program.to_account_info(),
+            ],
+            &[]
+          )?;
+          msg!("SOL transferred to the pool");
+
+          let transfer_fee_ix = system_instruction::transfer(
+            ctx.accounts.trader.key,
+            &ctx.accounts.fee_vault.key(),
+            fee,
+          );
+          solana_program::program::invoke_signed(
+            &transfer_fee_ix,
+            &[
+              ctx.accounts.trader.to_account_info(),
+              ctx.accounts.fee_vault.to_account_info(), // daocli implementation is clone()
+              ctx.accounts.system_program.to_account_info(),
+            ],
+            &[]
+          )?;
+          msg!("SOL transferred to the fee vault");
         }
         Ok(())
     }

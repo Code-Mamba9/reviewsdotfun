@@ -15,6 +15,8 @@ pub struct CreatePool<'info> {
 
     #[account(
       mut,
+      seeds=[b"mint", args.merchant_key.as_ref()],
+      bump
     )]
     pub mint: InterfaceAccount<'info, Mint>,
     #[account(
@@ -48,12 +50,12 @@ impl CreatePool<'_> {
     pub fn create_pool(ctx: Context<Self>, _args: CreatePoolArgs) -> Result<()> {
       ctx.accounts.pool.set_inner(Pool {
         mint_a: ctx.accounts.mint.key(),
-        pool_sol_amount: ctx.accounts.global.initial_sol_reserve,
+        pool_sol_lamports: ctx.accounts.global.initial_sol_reserve,
         pool_a_amount: ctx.accounts.global.initial_token_a_reserves,
         reward_a_amount: ctx.accounts.global.reward_reserves,
-        k: ctx.accounts.global.initial_sol_reserve.checked_mul(ctx.accounts.global.initial_token_a_reserves).unwrap(), // TODO: Handles potential overflow
         fee: ctx.accounts.global.fee_basis_pt,
         bump: ctx.bumps.pool,
+        complete: false
       });
       Ok(())
     }

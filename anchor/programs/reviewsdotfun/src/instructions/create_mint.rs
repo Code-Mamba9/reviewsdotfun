@@ -35,8 +35,6 @@ pub struct CreateMint<'info> {
       mint::decimals = 6,
       mint::authority = global_pda.key(),
       mint::freeze_authority = global_pda.key(),
-      //mint::authority=signer,
-      //mint::freeze_authority=signer,
       seeds=[b"mint", args.merchant_key.as_ref()],
       bump
     )]

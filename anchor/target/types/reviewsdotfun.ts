@@ -176,7 +176,24 @@ export type Reviewsdotfun = {
         },
         {
           "name": "mint",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "args.merchant_key"
+              }
+            ]
+          }
         },
         {
           "name": "pool",
@@ -563,25 +580,11 @@ export type Reviewsdotfun = {
           "signer": true
         },
         {
-          "name": "mint",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  109,
-                  105,
-                  110,
-                  116
-                ]
-              },
-              {
-                "kind": "arg",
-                "path": "args.merchant_key"
-              }
-            ]
-          }
+          "name": "feeVault",
+          "writable": true
+        },
+        {
+          "name": "mint"
         },
         {
           "name": "pool",
@@ -836,6 +839,21 @@ export type Reviewsdotfun = {
       "code": 6003,
       "name": "overFlowU64",
       "msg": "Input amount too big"
+    },
+    {
+      "code": 6004,
+      "name": "buyError",
+      "msg": "Failed to buy token"
+    },
+    {
+      "code": 6005,
+      "name": "sellError",
+      "msg": "Failed to sell SOL"
+    },
+    {
+      "code": 6006,
+      "name": "slippageExceeded",
+      "msg": "Slippage Exceeded"
     }
   ],
   "types": [
@@ -981,7 +999,7 @@ export type Reviewsdotfun = {
             "type": "pubkey"
           },
           {
-            "name": "poolSolAmount",
+            "name": "poolSolLamports",
             "type": "u64"
           },
           {
@@ -993,16 +1011,16 @@ export type Reviewsdotfun = {
             "type": "u64"
           },
           {
-            "name": "k",
-            "type": "u64"
-          },
-          {
             "name": "fee",
             "type": "u8"
           },
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "complete",
+            "type": "bool"
           }
         ]
       }
@@ -1012,10 +1030,6 @@ export type Reviewsdotfun = {
       "type": {
         "kind": "struct",
         "fields": [
-          {
-            "name": "merchantKey",
-            "type": "pubkey"
-          },
           {
             "name": "amount",
             "type": "u64"

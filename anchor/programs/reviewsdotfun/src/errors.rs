@@ -13,4 +13,13 @@ pub enum ReviewFunError {
 
     #[msg("Input amount too big")]
     OverFlowU64,
+
+    #[msg("Failed to buy token")]
+    BuyError,
+
+    #[msg("Failed to sell SOL")]
+    SellError,
+
+    #[msg("Slippage Exceeded")]
+    SlippageExceeded,
 }
