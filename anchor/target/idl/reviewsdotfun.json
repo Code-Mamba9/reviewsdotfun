@@ -381,24 +381,7 @@
         },
         {
           "name": "mint",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  109,
-                  105,
-                  110,
-                  116
-                ]
-              },
-              {
-                "kind": "arg",
-                "path": "args.merchant_key"
-              }
-            ]
-          }
+          "writable": true
         },
         {
           "name": "global_pda",
@@ -421,6 +404,7 @@
         },
         {
           "name": "pool_ata",
+          "writable": true,
           "pda": {
             "seeds": [
               {

@@ -387,24 +387,7 @@ export type Reviewsdotfun = {
         },
         {
           "name": "mint",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  109,
-                  105,
-                  110,
-                  116
-                ]
-              },
-              {
-                "kind": "arg",
-                "path": "args.merchant_key"
-              }
-            ]
-          }
+          "writable": true
         },
         {
           "name": "globalPda",
@@ -427,6 +410,7 @@ export type Reviewsdotfun = {
         },
         {
           "name": "poolAta",
+          "writable": true,
           "pda": {
             "seeds": [
               {

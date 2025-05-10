@@ -8,7 +8,7 @@ import { PublicKey } from "@solana/web3.js";
 import { ProgramTestContext } from "solana-bankrun";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import { SYSTEM_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/native/system";
-import { getMint } from "@solana/spl-token";
+import { getAssociatedTokenAddress, getMint } from "@solana/spl-token";
 describe("reviewsdotfun", () => {
   // Configure the client to use the local cluster.
   const merchant = new anchor.web3.Keypair();
@@ -110,9 +110,6 @@ describe("reviewsdotfun", () => {
     };
     let mintAcc = await getMint(connection, mint);
 
-    console.log(poolContext);
-    console.log(mintAcc);
-
     await program.methods
       .createPool({
         merchantKey: merchant.publicKey,
@@ -123,45 +120,33 @@ describe("reviewsdotfun", () => {
       [Buffer.from("pool"), mint.toBuffer()],
       program.programId,
     );
-
-    console.log(
-      "-------------------------------------------------------------------------------------------",
-    );
     console.log(pool);
+    // console.log(mintAcc);
+    // console.log(globalPda);
 
-    // const globalPdaData = await program.account.global.fetch(
-    //   globalPda,
-    //   "confirmed",
-    // );
+    const poolAta = anchor.utils.token.associatedAddress({
+      mint,
+      owner: pool,
+    });
 
-    // console.log(pool);
+    const mintTokenCtx = {
+      mint,
+      globalPda,
+      poolAta,
+      pool,
+      rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      associatedTokenProgram: anchor.utils.token.ASSOCIATED_PROGRAM_ID,
+      systemProgram: anchor.web3.SystemProgram.programId,
+    };
+
+    await program.methods
+      .mintToken({
+        merchantKey: merchant.publicKey,
+      })
+      .accounts(mintTokenCtx)
+      .rpc({ skipPreflight: true, commitment: "confirmed" });
 
     // console.log(globalPdaData);
   });
 });
-
-// const mintIx = await program.methods
-//   .createMint({
-//     name: "TESTING",
-//     symbol: "TEST",
-//     uri: "nothingfornow",
-//     decimals: 6,
-//   })
-//   .accounts({
-//     metadata: metadata,
-//     signer: wallet.publicKey,
-//     tokenProgram: TOKEN_PROGRAM_ID,
-//   })
-//   .instruction();
-//
-// const blockhashContext = await connection.getLatestBlockhash();
-//
-// const tx = new anchor.web3.Transaction({
-//   blockhash: blockhashContext.blockhash,
-//   lastValidBlockHeight: blockhashContext.lastValidBlockHeight,
-//   feePayer: wallet.payer.publicKey,
-// }).add(mintIx);
-//
-// const sig = await anchor.web3.sendAndConfirmTransaction(connection, tx, [
-//   wallet.payer,
-// ]);

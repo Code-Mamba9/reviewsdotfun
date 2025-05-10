@@ -14,12 +14,8 @@ pub struct MintToken<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
 
-    #[account(
-      mut,
-      seeds=[b"mint", &args.merchant_key.to_bytes()],
-      bump,
-    )]
-    pub mint: InterfaceAccount<'info, Mint>,
+    #[account(mut)]
+    mint: InterfaceAccount<'info, Mint>,
 
     #[account(
       mut,
@@ -29,6 +25,7 @@ pub struct MintToken<'info> {
     pub global_pda: Account<'info, Global>,
 
     #[account(
+      mut,
       associated_token::mint=mint,
       associated_token::authority=pool,
     )]
@@ -53,7 +50,7 @@ impl MintToken<'_> {
     //
     //#[access_control(ctx.accounts.validate())]
     pub fn mint_token(ctx: Context<Self>, _args: MintTokenArgs) -> Result<()> {
-        let signer_seeds: &[&[&[u8]]] = &[&[b"global", &[ctx.bumps.mint]]];
+        let signer_seeds: &[&[&[u8]]] = &[&[b"global".as_ref(), &[ctx.accounts.global_pda.bump]]];
         let cpi_accounts = MintTo {
             mint: ctx.accounts.mint.to_account_info(),
             to: ctx.accounts.pool_ata.to_account_info(),
