@@ -49,12 +49,13 @@ pub struct CreatePool<'info> {
 
 impl CreatePool<'_> {
     pub fn create_pool(ctx: Context<Self>, _args: CreatePoolArgs) -> Result<()> {
+      let global_account = &ctx.accounts.global;
       ctx.accounts.pool.set_inner(Pool {
         mint_a: ctx.accounts.mint.key(),
-        pool_sol_lamports: ctx.accounts.global.initial_sol_reserve,
-        pool_a_amount: ctx.accounts.global.initial_token_a_reserves,
-        reward_a_amount: ctx.accounts.global.reward_reserves,
-        fee: ctx.accounts.global.fee_basis_pt,
+        pool_sol_lamports: global_account.initial_sol,
+        pool_a_amount: ((global_account.token_supply as f64) * (global_account.token_trade_portion)) as u64,
+        reward_a_amount: ((global_account.token_supply as f64) * (global_account.token_reward_portion)) as u64,
+        fee: global_account.fee_basis_pt,
         bump: ctx.bumps.pool,
         complete: false
       });

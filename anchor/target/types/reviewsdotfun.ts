@@ -904,16 +904,20 @@ export type Reviewsdotfun = {
             "type": "pubkey"
           },
           {
-            "name": "initialSolReserve",
+            "name": "initialSol",
             "type": "u64"
           },
           {
-            "name": "initialTokenAReserves",
-            "type": "u64"
+            "name": "tokenTradePortion",
+            "type": "f64"
           },
           {
-            "name": "rewardReserves",
-            "type": "u64"
+            "name": "tokenRewardPortion",
+            "type": "f64"
+          },
+          {
+            "name": "tokenReservePortion",
+            "type": "f64"
           },
           {
             "name": "tokenSupply",

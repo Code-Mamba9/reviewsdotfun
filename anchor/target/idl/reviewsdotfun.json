@@ -898,16 +898,20 @@
             "type": "pubkey"
           },
           {
-            "name": "initial_sol_reserve",
+            "name": "initial_sol",
             "type": "u64"
           },
           {
-            "name": "initial_token_a_reserves",
-            "type": "u64"
+            "name": "token_trade_portion",
+            "type": "f64"
           },
           {
-            "name": "reward_reserves",
-            "type": "u64"
+            "name": "token_reward_portion",
+            "type": "f64"
+          },
+          {
+            "name": "token_reserve_portion",
+            "type": "f64"
           },
           {
             "name": "token_supply",

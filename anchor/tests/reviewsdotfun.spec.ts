@@ -120,7 +120,6 @@ describe("reviewsdotfun", () => {
       [Buffer.from("pool"), mint.toBuffer()],
       program.programId,
     );
-    console.log(pool);
     // console.log(mintAcc);
     // console.log(globalPda);
 
@@ -147,6 +146,11 @@ describe("reviewsdotfun", () => {
       .accounts(mintTokenCtx)
       .rpc({ skipPreflight: true, commitment: "confirmed" });
 
+    console.log(pool);
+    // const globalPdaData = await program.account.global.fetch(
+    //   globalPda,
+    //   "confirmed",
+    // );
     // console.log(globalPdaData);
   });
 });

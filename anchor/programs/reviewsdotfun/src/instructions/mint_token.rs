@@ -58,7 +58,7 @@ impl MintToken<'_> {
         };
         let cpi_program = ctx.accounts.token_program.to_account_info();
         let cpi_context = CpiContext::new(cpi_program, cpi_accounts).with_signer(signer_seeds);
-        token_interface::mint_to(cpi_context, TOKEN_SUPPLY)?;
+        token_interface::mint_to(cpi_context, ctx.accounts.pool.pool_a_amount)?;
         Ok(())
     }
 }
