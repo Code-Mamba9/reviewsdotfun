@@ -1,5 +1,5 @@
 import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
+import { BN, Program } from "@coral-xyz/anchor";
 import { TOKEN_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
 import IDL from "../target/idl/reviewsdotfun.json";
 import { Reviewsdotfun } from "../target/types/reviewsdotfun";
@@ -19,6 +19,8 @@ describe("reviewsdotfun", () => {
   let context: ProgramTestContext;
   let merchantProvider: BankrunProvider;
   let program2: Program<Reviewsdotfun>;
+  const feeVault = new anchor.web3.Keypair();
+  const authority = new anchor.web3.Keypair();
 
   beforeAll(async () => {
     context = await startAnchor(
@@ -39,10 +41,12 @@ describe("reviewsdotfun", () => {
 
     merchantProvider = new BankrunProvider(context);
     merchantProvider.wallet = new NodeWallet(merchant) as anchor.Wallet;
-    program2 = new Program<Reviewsdotfun>(
-      IDL as Reviewsdotfun,
-      merchantProvider,
-    );
+    let txhash = await connection.requestAirdrop(feeVault.publicKey, 1e9);
+    console.log(txhash);
+    // program2 = new Program<Reviewsdotfun>(
+    //   IDL as Reviewsdotfun,
+    //   merchantProvider,
+    // );
   });
 
   const program = new Program<Reviewsdotfun>(IDL as Reviewsdotfun, provider);
@@ -52,9 +56,6 @@ describe("reviewsdotfun", () => {
   );
 
   it("Init Global, Mint and Merchant Pool!", async () => {
-    const feeVault = new anchor.web3.Keypair();
-    const authority = new anchor.web3.Keypair();
-
     const [globalPda] = anchor.web3.PublicKey.findProgramAddressSync(
       [Buffer.from("global")],
       program.programId,
@@ -146,11 +147,30 @@ describe("reviewsdotfun", () => {
       .accounts(mintTokenCtx)
       .rpc({ skipPreflight: true, commitment: "confirmed" });
 
-    console.log(pool);
+    console.log(pool.toString());
+    console.log(feeVault.publicKey.toString());
     // const globalPdaData = await program.account.global.fetch(
     //   globalPda,
     //   "confirmed",
     // );
     // console.log(globalPdaData);
+    //
+    // Swapping
+    const buyCtx = {
+      feeVault: feeVault.publicKey,
+      mint,
+      pool,
+      poolAta,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      associatedTokenProgram: anchor.utils.token.ASSOCIATED_PROGRAM_ID,
+      systemProgram: anchor.web3.SystemProgram.programId,
+    };
+    await program.methods
+      .trade({
+        amount: new BN(100000000),
+        buy: true,
+      })
+      .accounts(buyCtx)
+      .rpc({ skipPreflight: true, commitment: "confirmed" });
   });
 });

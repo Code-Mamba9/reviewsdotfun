@@ -56,17 +56,17 @@ impl Trade<'_> {
     pub fn trade(ctx: Context<Self>, args: TradeArgs) -> Result<()> {
         let pool = &mut ctx.accounts.pool;
         let TradeArgs{ amount, buy } = args;
+        let trader = &ctx.accounts.trader;
         if buy {
           // buy token using sol
           let buy_result = pool.apply_buy(amount).ok_or(ReviewFunError::BuyError)?;
-          let BuyResult { token_amount, sol_lamports, .. } = buy_result;
+          let BuyResult { token_decimals, sol_lamports, .. } = buy_result;
           let fee = pool.calc_fee(sol_lamports)?;
           msg!("Buy token fee is {}", fee);
 
 
           // complete user buy
-          require!(token_amount >= MIN_OUT_TOKEN, ReviewFunError::SlippageExceeded);
-          let trader = &ctx.accounts.trader;
+          require!(token_decimals >= MIN_OUT_TOKEN, ReviewFunError::SlippageExceeded);
           require!(trader.get_lamports() >= fee, ReviewFunError::InsufficientBalance);
 
           // transfer token to trader
@@ -84,7 +84,7 @@ impl Trade<'_> {
           ];
           let signer_seeds = [&signer[..]];
           let cpi_ctx = CpiContext::new_with_signer(ctx.accounts.token_program.to_account_info(), cpi_accounts, &signer_seeds);
-          transfer_checked(cpi_ctx, token_amount, ctx.accounts.mint.decimals)?;
+          transfer_checked(cpi_ctx, token_decimals, ctx.accounts.mint.decimals)?;
           // transfer sol to bonding curve and fee vault
           let transfer_pool_ix = system_instruction::transfer(
             ctx.accounts.trader.key,
@@ -117,6 +117,33 @@ impl Trade<'_> {
             &[]
           )?;
           msg!("SOL transferred to the fee vault");
+        } else {
+          // sell token and get sol
+          let sell_result = pool.apply_sell(amount).ok_or(ReviewFunError::SellError)?;
+          let SellResult{ token_decimals, sol_lamports, ..} = sell_result;
+          let fee = pool.calc_fee(sol_lamports)?;
+          msg!("Sell token fee is {}", fee);
+
+          // complete user sell
+          require!(sol_lamports >= MIN_OUT_TOKEN, ReviewFunError::SlippageExceeded);
+          require!(trader.get_lamports() >= fee, ReviewFunError::InsufficientBalance);
+          // transfer token to the pool
+          let cpi_accounts = TransferChecked {
+            from: ctx.accounts.trader_ata.to_account_info(),
+            authority: ctx.accounts.pool.to_account_info(),
+            to: ctx.accounts.pool_ata.to_account_info(),
+            mint: ctx.accounts.mint.to_account_info(),
+          };
+
+          let cpi_ctx = CpiContext::new(ctx.accounts.token_program.to_account_info(), cpi_accounts);
+          transfer_checked(cpi_ctx, token_decimals, ctx.accounts.mint.decimals)?;
+          msg!("Token transferred to the pool");
+          // transfer sol to trader
+          let transferred_lamports = sol_lamports - fee;
+          ctx.accounts.trader.add_lamports(transferred_lamports)?;
+          ctx.accounts.fee_vault.add_lamports(fee)?;
+          ctx.accounts.pool.sub_lamports(sol_lamports)?;
+          msg!("CompleteSell, sol transfer: {}, fee transfer {}", transferred_lamports, fee);
         }
         Ok(())
     }
