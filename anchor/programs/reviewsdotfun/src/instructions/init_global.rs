@@ -39,6 +39,7 @@ impl InitGlobal<'_> {
           token_reward_portion: TOKEN_REWARD_PORTION,
           token_reserve_portion: TOKEN_RESERVE_PORTION,
           token_supply: TOKEN_DECIMALS,
+          reward_decimals: REWARD_DECIMALS,
           fee_basis_pt: FEE_BASIS_PT,
           bump: ctx.bumps.global_pda,
         }

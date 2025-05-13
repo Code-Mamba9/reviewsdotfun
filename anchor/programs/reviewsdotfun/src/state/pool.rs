@@ -1,6 +1,8 @@
 //use crate::{error::*, errors::ReviewFunError};
 use anchor_lang::prelude::*;
 
+use crate::SOL_RAISED_LAMPORTS;
+
 #[account]
 #[derive(Default, InitSpace)]
 pub struct Pool {
@@ -10,7 +12,8 @@ pub struct Pool {
     pub reward_a_amount: u64,
     pub fee: u8,
     pub bump: u8,
-    pub complete: bool,
+    pub pool_complete: bool,
+    pub reward_complete: bool,
 }
 #[derive(Debug, Clone)]
 pub struct BuyResult {
@@ -34,7 +37,8 @@ impl Pool {
     pub fn apply_buy(&mut self, sol_lamports: u64) -> Option<BuyResult> {
         let token_decimals = match self.get_tokens_for_buy_sol(sol_lamports) {
             Some(a_decimals) => {
-                self.pool_a_amount = self.pool_a_amount.checked_sub(a_decimals)?;
+                //self.pool_a_amount = self.pool_a_amount.checked_sub(a_decimals)?;
+                self.pool_a_amount.checked_sub(a_decimals)?;
                 self.pool_sol_lamports = self.pool_sol_lamports.checked_add(sol_lamports)?;
                 a_decimals
             }
@@ -125,5 +129,17 @@ impl Pool {
         msg!("GetSolForBuyToken sol_to_user: {}", sol_to_user);
 
         Some(sol_to_user)
+    }
+
+    pub fn check_complete(&mut self) {
+        self.pool_complete = self.pool_sol_lamports >= SOL_RAISED_LAMPORTS;
+        self.reward_complete = self.reward_a_amount == 0;
+    }
+
+    pub fn apply_reward(&mut self, reward_decimals: u64) {
+        self.reward_a_amount = match self.reward_a_amount.checked_sub(reward_decimals) {
+            Some(remain_reward) => remain_reward,
+            None => 0,
+        }
     }
 }

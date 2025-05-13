@@ -25,6 +25,7 @@ pub struct CreatePool<'info> {
       space=8+Pool::INIT_SPACE,
       payer=signer,
       seeds=[b"pool", mint.key().as_ref()],
+      constraint=(!pool.reward_complete && !pool.pool_complete) @ ReviewFunError::BondingCurveComplete,
       bump
     )]
     pub pool: Account<'info, Pool>,
@@ -57,7 +58,8 @@ impl CreatePool<'_> {
         reward_a_amount: ((global_account.token_supply as f64) * (global_account.token_reward_portion)) as u64,
         fee: global_account.fee_basis_pt,
         bump: ctx.bumps.pool,
-        complete: false
+        pool_complete: false,
+        reward_complete: false,
       });
       msg!("CreatePool: pool created!");
       

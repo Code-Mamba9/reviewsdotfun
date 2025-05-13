@@ -28,4 +28,13 @@ pub enum ReviewFunError {
 
     #[msg("Slippage Exceeded")]
     SlippageExceeded,
+
+    #[msg("Bonding Curve Complete, Reward all distributed")]
+    PoolAllComplete,
+
+    #[msg("Bonding Curve Complete")]
+    BondingCurveComplete,
+
+    #[msg("Reward Complete")]
+    RewardComplete,
 }

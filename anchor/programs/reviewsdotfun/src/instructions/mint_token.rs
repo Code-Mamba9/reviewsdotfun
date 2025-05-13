@@ -56,9 +56,10 @@ impl MintToken<'_> {
             to: ctx.accounts.pool_ata.to_account_info(),
             authority: ctx.accounts.global_pda.to_account_info(),
         };
+        let pool = &ctx.accounts.pool;
         let cpi_program = ctx.accounts.token_program.to_account_info();
         let cpi_context = CpiContext::new(cpi_program, cpi_accounts).with_signer(signer_seeds);
-        token_interface::mint_to(cpi_context, ctx.accounts.pool.pool_a_amount)?;
+        token_interface::mint_to(cpi_context, pool.pool_a_amount + pool.reward_a_amount)?;
         Ok(())
     }
 }
