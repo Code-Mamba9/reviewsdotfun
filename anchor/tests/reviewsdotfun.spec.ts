@@ -147,8 +147,6 @@ describe("reviewsdotfun", () => {
       .accounts(mintTokenCtx)
       .rpc({ skipPreflight: true, commitment: "confirmed" });
 
-    console.log(pool.toString());
-    console.log(feeVault.publicKey.toString());
     // const globalPdaData = await program.account.global.fetch(
     //   globalPda,
     //   "confirmed",
@@ -172,5 +170,24 @@ describe("reviewsdotfun", () => {
       })
       .accounts(buyCtx)
       .rpc({ skipPreflight: true, commitment: "confirmed" });
+    const sellCtx = {
+      feeVault: feeVault.publicKey,
+      mint,
+      pool,
+      poolAta,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      associatedTokenProgram: anchor.utils.token.ASSOCIATED_PROGRAM_ID,
+      systemProgram: anchor.web3.SystemProgram.programId,
+    };
+    await program.methods
+      .trade({
+        amount: new BN(100000000),
+        buy: false,
+      })
+      .accounts(sellCtx)
+      .rpc({ skipPreflight: true, commitment: "confirmed" });
+    console.log(pool.toString());
+    console.log(poolAta.toString());
+    // console.log(feeVault.publicKey.toString());
   });
 });

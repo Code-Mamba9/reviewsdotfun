@@ -8,6 +8,9 @@ pub enum ReviewFunError {
     #[msg("Account doesnt have enough SOL")]
     InsufficientLamports,
 
+    #[msg("Account doesnt have enough Token")]
+    InsufficientDecimals,
+
     #[msg("At least 1 SOL to create a pool")]
     BootStrapError,
 

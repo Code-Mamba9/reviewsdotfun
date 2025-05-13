@@ -117,8 +117,9 @@ impl Trade<'_> {
             &[]
           )?;
           msg!("SOL transferred to the fee vault");
-        } else {
-          // sell token and get sol
+        } else {          // sell token and get sol
+          msg!("SellToken trader ata balance: {}", ctx.accounts.trader_ata.amount);
+          require!(ctx.accounts.trader_ata.amount >= amount, ReviewFunError::InsufficientLamports);
           let sell_result = pool.apply_sell(amount).ok_or(ReviewFunError::SellError)?;
           let SellResult{ token_decimals, sol_lamports, ..} = sell_result;
           let fee = pool.calc_fee(sol_lamports)?;
@@ -130,11 +131,12 @@ impl Trade<'_> {
           // transfer token to the pool
           let cpi_accounts = TransferChecked {
             from: ctx.accounts.trader_ata.to_account_info(),
-            authority: ctx.accounts.pool.to_account_info(),
+            authority: ctx.accounts.trader.to_account_info(),
             to: ctx.accounts.pool_ata.to_account_info(),
             mint: ctx.accounts.mint.to_account_info(),
           };
 
+          msg!("SellToken: tokendecimals:{}", token_decimals);
           let cpi_ctx = CpiContext::new(ctx.accounts.token_program.to_account_info(), cpi_accounts);
           transfer_checked(cpi_ctx, token_decimals, ctx.accounts.mint.decimals)?;
           msg!("Token transferred to the pool");

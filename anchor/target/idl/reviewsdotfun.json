@@ -810,31 +810,36 @@
     },
     {
       "code": 6002,
+      "name": "InsufficientDecimals",
+      "msg": "Account doesnt have enough Token"
+    },
+    {
+      "code": 6003,
       "name": "BootStrapError",
       "msg": "At least 1 SOL to create a pool"
     },
     {
-      "code": 6003,
+      "code": 6004,
       "name": "CalculationError",
       "msg": "Pool calculation Error"
     },
     {
-      "code": 6004,
+      "code": 6005,
       "name": "OverFlowU64",
       "msg": "Input amount too big"
     },
     {
-      "code": 6005,
+      "code": 6006,
       "name": "BuyError",
       "msg": "Failed to buy token"
     },
     {
-      "code": 6006,
+      "code": 6007,
       "name": "SellError",
       "msg": "Failed to sell SOL"
     },
     {
-      "code": 6007,
+      "code": 6008,
       "name": "SlippageExceeded",
       "msg": "Slippage Exceeded"
     }

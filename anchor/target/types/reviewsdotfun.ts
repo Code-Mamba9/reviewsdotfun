@@ -816,31 +816,36 @@ export type Reviewsdotfun = {
     },
     {
       "code": 6002,
+      "name": "insufficientDecimals",
+      "msg": "Account doesnt have enough Token"
+    },
+    {
+      "code": 6003,
       "name": "bootStrapError",
       "msg": "At least 1 SOL to create a pool"
     },
     {
-      "code": 6003,
+      "code": 6004,
       "name": "calculationError",
       "msg": "Pool calculation Error"
     },
     {
-      "code": 6004,
+      "code": 6005,
       "name": "overFlowU64",
       "msg": "Input amount too big"
     },
     {
-      "code": 6005,
+      "code": 6006,
       "name": "buyError",
       "msg": "Failed to buy token"
     },
     {
-      "code": 6006,
+      "code": 6007,
       "name": "sellError",
       "msg": "Failed to sell SOL"
     },
     {
-      "code": 6007,
+      "code": 6008,
       "name": "slippageExceeded",
       "msg": "Slippage Exceeded"
     }
