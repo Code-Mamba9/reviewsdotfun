@@ -59,15 +59,20 @@ impl SendReward<'_> {
             ctx.accounts.global_pda.reward_decimals,
         );
         pool.apply_reward(real_reward_decimals);
-        let signer_seeds: &[&[&[u8]]] = &[&[b"pool".as_ref(), &[pool.bump]]];
+        let signer = &[
+            b"pool",
+            ctx.accounts.mint.to_account_info().key.as_ref(),
+            &[pool.bump],
+        ];
+        let signer_seeds = [&signer[..]];
         let cpi_accounts = TransferChecked {
             from: ctx.accounts.pool_ata.to_account_info(),
-            to: ctx.accounts.reviewer.to_account_info(),
+            to: ctx.accounts.reviewer_ata.to_account_info(),
             mint: ctx.accounts.mint.to_account_info(),
             authority: pool.to_account_info(),
         };
         let cpi_program = ctx.accounts.token_program.to_account_info();
-        let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts).with_signer(signer_seeds);
+        let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts).with_signer(&signer_seeds);
         transfer_checked(cpi_ctx, real_reward_decimals, ctx.accounts.mint.decimals)?;
         pool.check_complete();
         Ok(())

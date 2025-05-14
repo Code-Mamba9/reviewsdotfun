@@ -8,7 +8,12 @@ import { PublicKey } from "@solana/web3.js";
 import { ProgramTestContext } from "solana-bankrun";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import { SYSTEM_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/native/system";
-import { getAssociatedTokenAddress, getMint } from "@solana/spl-token";
+import {
+  getAssociatedTokenAddress,
+  getMint,
+  NATIVE_MINT,
+} from "@solana/spl-token";
+
 describe("reviewsdotfun", () => {
   // Configure the client to use the local cluster.
   const merchant = new anchor.web3.Keypair();
@@ -121,8 +126,6 @@ describe("reviewsdotfun", () => {
       [Buffer.from("pool"), mint.toBuffer()],
       program.programId,
     );
-    // console.log(mintAcc);
-    // console.log(globalPda);
 
     const poolAta = anchor.utils.token.associatedAddress({
       mint,
@@ -147,12 +150,6 @@ describe("reviewsdotfun", () => {
       .accounts(mintTokenCtx)
       .rpc({ skipPreflight: true, commitment: "confirmed" });
 
-    // const globalPdaData = await program.account.global.fetch(
-    //   globalPda,
-    //   "confirmed",
-    // );
-    // console.log(globalPdaData);
-    //
     // Swapping
     const buyCtx = {
       feeVault: feeVault.publicKey,
@@ -187,7 +184,44 @@ describe("reviewsdotfun", () => {
       .accounts(sellCtx)
       .rpc({ skipPreflight: true, commitment: "confirmed" });
     console.log(pool.toString());
-    console.log(poolAta.toString());
+    // console.log(poolAta.toString());
     // console.log(feeVault.publicKey.toString());
+    const rewardCtx = {
+      mint,
+      globalPda,
+      poolAta,
+      pool,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      associatedTokenProgram: anchor.utils.token.ASSOCIATED_PROGRAM_ID,
+      systemProgram: anchor.web3.SystemProgram.programId,
+    };
+
+    await program.methods
+      .sendReward()
+      .accounts(rewardCtx)
+      .rpc({ skipPreflight: true, commitment: "confirmed" });
+  });
+
+  it("distribute reward test", async () => {});
+
+  it("wrap sol test", async () => {
+    const wsolAta = anchor.utils.token.associatedAddress({
+      mint: NATIVE_MINT,
+      owner: wallet.publicKey,
+    });
+    const wrapCtx = {
+      wsolMint: NATIVE_MINT,
+      userWsolAta: wsolAta,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      associatedTokenProgram: anchor.utils.token.ASSOCIATED_PROGRAM_ID,
+      systemProgram: anchor.web3.SystemProgram.programId,
+    };
+    let txhash = await program.methods
+      .wrapSol()
+      .accounts(wrapCtx)
+      .rpc({ skipPreflight: true, commitment: "confirmed" });
+
+    console.log(wsolAta);
+    console.log(txhash);
   });
 });

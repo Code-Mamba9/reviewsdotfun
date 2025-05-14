@@ -33,4 +33,12 @@ pub mod reviewsdotfun {
     pub fn trade(ctx: Context<Trade>, args: TradeArgs) -> Result<()> {
         Trade::trade(ctx, args)
     }
+
+    pub fn send_reward(ctx: Context<SendReward>) -> Result<()> {
+        SendReward::send_reward(ctx)
+    }
+
+    pub fn wrap_sol(ctx: Context<WrapSol>) -> Result<()> {
+        WrapSol::wrap_sol(ctx)
+    }
 }
