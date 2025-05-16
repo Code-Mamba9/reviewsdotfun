@@ -20,12 +20,13 @@ pub struct MigrateArgs {
 }
 
 #[derive(Accounts)]
+#[instruction(args: MigrateArgs)]
 pub struct Migrate<'info> {
     #[account(mut)]
     pub creator: Signer<'info>,
     #[account(
         init,
-        seeds = [b"pool".as_ref(), &index.to_le_bytes(), creator.key().as_ref(), base_mint.key().as_ref(), quote_mint.key().as_ref()],
+        seeds = [b"pool".as_ref(), &args.index.to_le_bytes(), creator.key().as_ref(), base_mint.key().as_ref(), quote_mint.key().as_ref()],
         bump,
         payer = creator,
         space = 8 + std::mem::size_of::<Pool>(),

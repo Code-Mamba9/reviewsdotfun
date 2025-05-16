@@ -47,11 +47,6 @@ describe("reviewsdotfun", () => {
     merchantProvider = new BankrunProvider(context);
     merchantProvider.wallet = new NodeWallet(merchant) as anchor.Wallet;
     let txhash = await connection.requestAirdrop(feeVault.publicKey, 1e9);
-    console.log(txhash);
-    // program2 = new Program<Reviewsdotfun>(
-    //   IDL as Reviewsdotfun,
-    //   merchantProvider,
-    // );
   });
 
   const program = new Program<Reviewsdotfun>(IDL as Reviewsdotfun, provider);

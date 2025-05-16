@@ -1,18 +1,16 @@
-pub use create_merchant::*;
 pub use create_mint::*;
 pub use create_pool::*;
 pub use init_global::*;
-pub use migrate::*;
+//pub use migrate::*;
 pub use mint_token::*;
 pub use send_reward::*;
 pub use trade::*;
 pub use wrap_sol::*;
 
-mod create_merchant;
 mod create_mint;
 mod create_pool;
 mod init_global;
-mod migrate;
+//mod migrate;
 mod mint_token;
 mod send_reward;
 mod set_global;

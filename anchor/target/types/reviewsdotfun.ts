@@ -14,60 +14,6 @@ export type Reviewsdotfun = {
   },
   "instructions": [
     {
-      "name": "createMerchant",
-      "discriminator": [
-        249,
-        172,
-        245,
-        100,
-        32,
-        117,
-        97,
-        156
-      ],
-      "accounts": [
-        {
-          "name": "creator",
-          "writable": true,
-          "signer": true
-        },
-        {
-          "name": "merchantPda",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  109,
-                  101,
-                  114,
-                  99,
-                  104,
-                  97,
-                  110,
-                  116,
-                  95,
-                  112,
-                  100,
-                  97
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "creator"
-              }
-            ]
-          }
-        },
-        {
-          "name": "systemProgram",
-          "address": "11111111111111111111111111111111"
-        }
-      ],
-      "args": []
-    },
-    {
       "name": "createMint",
       "discriminator": [
         69,
@@ -1092,19 +1038,6 @@ export type Reviewsdotfun = {
       ]
     },
     {
-      "name": "merchant",
-      "discriminator": [
-        71,
-        235,
-        30,
-        40,
-        231,
-        21,
-        32,
-        64
-      ]
-    },
-    {
       "name": "pool",
       "discriminator": [
         241,
@@ -1284,26 +1217,6 @@ export type Reviewsdotfun = {
           },
           {
             "name": "feeVault",
-            "type": "pubkey"
-          }
-        ]
-      }
-    },
-    {
-      "name": "merchant",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "name",
-            "type": "string"
-          },
-          {
-            "name": "bump",
-            "type": "u8"
-          },
-          {
-            "name": "owner",
             "type": "pubkey"
           }
         ]
