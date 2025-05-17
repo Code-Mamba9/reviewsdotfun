@@ -11,8 +11,10 @@
 - Solana CLI 1.18.17 or higher
 
 ### Run the project
-
+.env: add your wallet addr to NEXT_PUBLIC_ADMIN_KEYS
 Frontend: npm run dev
+Backend: In the /anchor dir run `solana-test-validator --bpf-program metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s mpl_token_metadata.so -r`, another terminal run `anchor deploy`
+
 
 ### Dependencies
 

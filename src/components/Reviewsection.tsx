@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,6 +12,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Star, Plus, Upload } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { useReviewsdotfunProgram } from "@/components/reviewsdotfun/reviewsdotfun-data-access";
+import { PublicKey } from "@solana/web3.js";
+import toast from "react-hot-toast";
+import { useParams } from "next/navigation";
 
 interface Review {
   id: string;
@@ -24,6 +28,9 @@ interface Review {
 }
 
 export function ReviewSection() {
+  const params = useParams();
+  const merchantAddress = params?.merchant as string;
+  const { sendReward } = useReviewsdotfunProgram();
   const [reviews, setReviews] = useState<Review[]>([
     {
       id: "1",
@@ -63,22 +70,42 @@ export function ReviewSection() {
     }
   };
 
-  const submitReview = () => {
+  const submitReview = async () => {
     if (newReview.rating > 0 && newReview.comment.trim()) {
-      const reviewToAdd: Review = {
-        id: (reviews.length + 1).toString(),
-        username: "Anonymous",
-        rating: newReview.rating,
-        comment: newReview.comment,
-        transactionId: newReview.transactionId,
-        photos: newReview.photos.length
-          ? newReview.photos.map((file) => URL.createObjectURL(file))
-          : undefined,
-        date: "Just now",
-      };
-      setReviews([reviewToAdd, ...reviews]);
-      setNewReview({ rating: 0, comment: "", transactionId: "", photos: [] });
-      setIsModalOpen(false);
+      try {
+        // Add the review to the UI
+        const reviewToAdd: Review = {
+          id: (reviews.length + 1).toString(),
+          username: "Anonymous",
+          rating: newReview.rating,
+          comment: newReview.comment,
+          // Make transactionId optional - it can be undefined, null, or empty
+          transactionId: newReview.transactionId || "",
+          photos: newReview.photos.length
+            ? newReview.photos.map((file) => URL.createObjectURL(file))
+            : undefined,
+          date: "Just now",
+        };
+        setReviews([reviewToAdd, ...reviews]);
+        
+        // Send reward tokens to the reviewer
+        if (merchantAddress) {
+          // Convert merchant address string to PublicKey
+          const merchantKey = new PublicKey(merchantAddress);
+          
+          // Call the sendReward function
+          const tx = await sendReward.mutateAsync(merchantKey);
+          toast.success("You received reward tokens for your review!");
+          console.log("Reward transaction:", tx);
+        }
+        
+        // Reset form and close modal
+        setNewReview({ rating: 0, comment: "", transactionId: "", photos: [] });
+        setIsModalOpen(false);
+      } catch (error) {
+        console.error("Error submitting review or sending reward:", error);
+        toast.error("There was an error processing your review. Please try again.");
+      }
     }
   };
 
@@ -110,7 +137,7 @@ export function ReviewSection() {
                   />
                 ))}
               </div>
-              <Input
+              {/* <Input
                 placeholder="SOL Transaction ID"
                 value={newReview.transactionId}
                 required
@@ -120,7 +147,7 @@ export function ReviewSection() {
                     transactionId: e.target.value,
                   }))
                 }
-              />
+              /> */}
               <Textarea
                 placeholder="Write your review..."
                 value={newReview.comment}
@@ -154,8 +181,8 @@ export function ReviewSection() {
                 onClick={submitReview}
                 disabled={
                   !newReview.rating ||
-                  !newReview.comment.trim() ||
-                  !newReview.transactionId.trim()
+                  !newReview.comment.trim() 
+                  // !newReview.transactionId.trim()
                 }
                 className="w-full"
               >

@@ -41,7 +41,7 @@ export function UiLayout({
   useEffect(() => {
     if (!publicKey) {
       setIsAdmin(false);
-      setDisplayLinks(links);
+      setDisplayLinks([]);
       return;
     }
 
@@ -53,50 +53,64 @@ export function UiLayout({
       setIsAdmin(isWalletAdmin);
       
       if (isWalletAdmin) {
-        // Add Admin tab if the wallet is in the admin list
+        // Only show Admin tab if the wallet is in the admin list
         setDisplayLinks([
-          ...links,
           { label: 'Admin', path: '/admin' }
         ]);
       } else {
-        setDisplayLinks(links);
+        setDisplayLinks([]);
       }
     } catch (error) {
       console.error('Error parsing ADMIN_KEYS:', error);
       setIsAdmin(false);
-      setDisplayLinks(links);
+      setDisplayLinks([]);
     }
   }, [publicKey, links]);
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="navbar bg-base-300 dark:text-neutral-content flex-col md:flex-row space-y-2 md:space-y-0">
-        <div className="flex-1">
-          <Link className="btn btn-ghost normal-case text-xl" href="/">
-            Reviewsdotfun
-          </Link>
-          <ul className="menu menu-horizontal px-1 space-x-2">
-            {displayLinks.map(({ label, path }: { label: string; path: string }) => (
-              <li key={path}>
+    <div className="min-h-screen flex flex-col bg-gray-50 text-gray-900">
+      <header className="sticky top-0 z-50 bg-black border-b border-gray-800 shadow-md">
+        <div className="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32 2xl:px-48 mx-auto">
+          <div className="flex flex-col md:flex-row items-center justify-between py-4">
+            <div className="flex items-center mb-4 md:mb-0">
+              <Link className="text-[#00FF88] font-bold text-2xl mr-8" href="/">
+                Reviews.Fun
+              </Link>
+              <nav className="hidden md:flex space-x-6">
+                {displayLinks.map(({ label, path }: { label: string; path: string }) => (
+                  <Link
+                    key={path}
+                    className={`text-sm font-medium transition-colors hover:text-[#00FF88] ${pathname.startsWith(path) ? "text-[#00FF88]" : "text-gray-300"}`}
+                    href={path}
+                  >
+                    {label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+            <div className="flex items-center space-x-4">
+              <WalletButton />
+              <ClusterUiSelect />
+            </div>
+          </div>
+          
+          {/* Mobile Navigation */}
+          <div className="md:hidden pb-2">
+            <nav className="flex justify-center space-x-4">
+              {displayLinks.map(({ label, path }: { label: string; path: string }) => (
                 <Link
-                  className={pathname.startsWith(path) ? "active" : ""}
+                  key={path}
+                  className={`text-sm font-medium transition-colors hover:text-[#00FF88] ${pathname.startsWith(path) ? "text-[#00FF88]" : "text-gray-300"}`}
                   href={path}
                 >
                   {label}
                 </Link>
-              </li>
-            ))}
-          </ul>
+              ))}
+            </nav>
+          </div>
         </div>
-        <div className="flex-none space-x-2">
-          <WalletButton />
-          {/* <WalletMultiButton /> */}
-          <ClusterUiSelect />
-          <Link href="/profile">
-            <Button>Create a Merchant profile</Button>
-          </Link>
-        </div>
-      </div>
+      </header>
+      
       <ClusterChecker>
         <AccountChecker />
       </ClusterChecker>

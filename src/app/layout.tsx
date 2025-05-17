@@ -8,18 +8,13 @@ export const metadata = {
   title: 'Reviewsdotfun',
 }
 
-// Define the links array outside of the component
-// The actual links will be determined in the UiLayout component
-const links: { label: string; path: string }[] = [
-  { label: 'Account', path: '/account' },
-  { label: 'Clusters', path: '/clusters' },
-  { label: 'Reviewsdotfun Program', path: '/reviewsdotfun' },
-]
+// Define an empty links array - we'll only add Admin link when needed in UiLayout
+const links: { label: string; path: string }[] = []
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="min-h-screen">
+      <body className="min-h-screen bg-gray-50">
         <ReactQueryProvider>
           <ClusterProvider>
             <SolanaProvider>

@@ -6,5 +6,6 @@ export interface Merchant {
   token_name: string;
   token_pic: string | null;
   token_mint: string | null;
+  token_decimals?: number; // Optional token decimals property
   created_at: string | null;
 }
