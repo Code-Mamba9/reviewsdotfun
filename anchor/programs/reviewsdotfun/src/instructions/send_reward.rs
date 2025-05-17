@@ -8,7 +8,6 @@ use anchor_spl::{
 };
 
 #[derive(Accounts)]
-//#[instruction(args: MintTokenArgs)]
 pub struct SendReward<'info> {
     #[account(mut)]
     pub reviewer: Signer<'info>,
@@ -40,7 +39,7 @@ pub struct SendReward<'info> {
 
     #[account(
       init_if_needed,
-      payer=pool,
+      payer=reviewer,
       associated_token::mint = mint,
       associated_token::authority = reviewer,
       associated_token::token_program = token_program,
@@ -59,6 +58,7 @@ impl SendReward<'_> {
             ctx.accounts.global_pda.reward_decimals,
         );
         pool.apply_reward(real_reward_decimals);
+        msg!("before declaring signer");
         let signer = &[
             b"pool",
             ctx.accounts.mint.to_account_info().key.as_ref(),
@@ -73,6 +73,7 @@ impl SendReward<'_> {
         };
         let cpi_program = ctx.accounts.token_program.to_account_info();
         let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts).with_signer(&signer_seeds);
+        msg!("before transfer checked");
         transfer_checked(cpi_ctx, real_reward_decimals, ctx.accounts.mint.decimals)?;
         pool.check_complete();
         Ok(())

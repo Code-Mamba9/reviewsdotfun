@@ -3,6 +3,7 @@ import type { Merchant } from "@/types";
 import { supabase } from "@/lib/supabaseClient";
 import { PublicKey } from "@solana/web3.js";
 import { isValidWalletAddress } from "@/utils/wallet";
+import { uploadFileToStorage } from "@/utils/supabaseStorage";
 
 interface MerchantStore {
   merchant: Merchant | null;
@@ -14,6 +15,7 @@ interface MerchantStore {
   profilePicture: File | null;
   tokenTicker: string;
   tokenImage: File | null;
+  tokenMint: string | null;
   setMerchant: (merchant: Merchant) => void;
   setIsEditing: (isEditing: boolean) => void;
   setIsCreating: (isCreating: boolean) => void;
@@ -23,6 +25,7 @@ interface MerchantStore {
   setProfilePicture: (file: File | null) => void;
   setTokenTicker: (ticker: string) => void;
   setTokenImage: (file: File | null) => void;
+  setTokenMint: (mint: string | null) => void;
   resetForm: () => void;
   updateMerchant: () => Promise<void>;
   createMerchant: () => Promise<void>;
@@ -38,6 +41,7 @@ const useMerchantStore = create<MerchantStore>((set, get) => ({
   profilePicture: null,
   tokenTicker: "",
   tokenImage: null,
+  tokenMint: null,
 
   setMerchant: (merchant) =>
     set({
@@ -46,6 +50,7 @@ const useMerchantStore = create<MerchantStore>((set, get) => ({
       companyWebsite: merchant.website_url,
       walletAddresses: [merchant.merchant_wallet_addr],
       tokenTicker: merchant.token_name,
+      tokenMint: merchant.token_mint
     }),
   setIsEditing: (isEditing) => set({ isEditing }),
   setIsCreating: (isCreating) => set({ isCreating }),
@@ -55,6 +60,7 @@ const useMerchantStore = create<MerchantStore>((set, get) => ({
   setProfilePicture: (file) => set({ profilePicture: file }),
   setTokenTicker: (ticker) => set({ tokenTicker: ticker }),
   setTokenImage: (file) => set({ tokenImage: file }),
+  setTokenMint: (mint) => set({ tokenMint: mint }),
 
   resetForm: () =>
     set({
@@ -75,6 +81,7 @@ const useMerchantStore = create<MerchantStore>((set, get) => ({
       profilePicture,
       tokenTicker,
       tokenImage,
+      tokenMint,
     } = get();
 
     if (!merchant) return;
@@ -83,41 +90,37 @@ const useMerchantStore = create<MerchantStore>((set, get) => ({
       throw new Error("Please enter valid wallet addresses.");
     }
 
-    const uploadImage = async (file: File, path: string) => {
-      const { error } = await supabase.storage
-        .from("merchant-profile-dev")
-        .upload(path, file);
+    // let updatedProfilePicUrl = merchant.profile_pic;
+    // let updatedTokenPicUrl = merchant.token_pic;
 
-      if (error) throw error;
-      const { data: publicUrlData } = supabase.storage
-        .from("merchant-profile-dev")
-        .getPublicUrl(path);
+    // if (profilePicture) {
+    //   try {
+    //     updatedProfilePicUrl = await uploadFileToStorage(profilePicture, 'profile');
+    //   } catch (err) {
+    //     console.error('Error uploading profile picture:', err);
+    //     throw new Error(`Failed to upload profile picture: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    //   }
+    // }
 
-      return publicUrlData.publicUrl;
-    };
-
-    let updatedProfilePicUrl = merchant.profile_pic;
-    let updatedTokenPicUrl = merchant.token_pic;
-
-    if (profilePicture) {
-      const profilePicPath = `profile-${companyName}-${walletAddresses[0]}`;
-      updatedProfilePicUrl = await uploadImage(profilePicture, profilePicPath);
-    }
-
-    if (tokenImage) {
-      const tokenPicPath = `token-${companyName}-${walletAddresses[0]}`;
-      updatedTokenPicUrl = await uploadImage(tokenImage, tokenPicPath);
-    }
+    // if (tokenImage) {
+    //   try {
+    //     updatedTokenPicUrl = await uploadFileToStorage(tokenImage, 'token');
+    //   } catch (err) {
+    //     console.error('Error uploading token image:', err);
+    //     throw new Error(`Failed to upload token image: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    //   }
+    // }
 
     const { error } = await supabase
-      .from("Merchants")
+      .from("Merchant")
       .update({
         merchant_wallet_addr: walletAddresses[0],
         name: companyName,
-        profile_pic: updatedProfilePicUrl,
+        profile_pic: null,
         token_name: tokenTicker,
-        token_pic: updatedTokenPicUrl,
+        token_pic: null,
         website_url: companyWebsite,
+        token_mint: tokenMint,
       })
       .eq("merchant_wallet_addr", merchant.merchant_wallet_addr);
 
@@ -130,10 +133,11 @@ const useMerchantStore = create<MerchantStore>((set, get) => ({
         ...merchant,
         merchant_wallet_addr: walletAddresses[0],
         name: companyName,
-        profile_pic: updatedProfilePicUrl,
+        profile_pic: null,
         token_name: tokenTicker,
-        token_pic: updatedTokenPicUrl,
+        token_pic: null,
         website_url: companyWebsite,
+        token_mint: tokenMint,
       },
       isEditing: false,
     });
@@ -167,38 +171,36 @@ const useMerchantStore = create<MerchantStore>((set, get) => ({
       throw new Error("Please upload a profile picture.");
     }
 
-    const uploadImage = async (file: File, path: string) => {
-      const { error } = await supabase.storage
-        .from("merchant-profile-dev")
-        .upload(path, file);
+    // let profilePicUrl;
+    // try {
+    //   profilePicUrl = await uploadFileToStorage(profilePicture, 'profile');
+    // } catch (err) {
+    //   console.error('Error uploading profile picture during creation:', err);
+    //   throw new Error(`Failed to upload profile picture: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    // }
 
-      if (error) throw error;
-      const { data: publicUrlData } = supabase.storage
-        .from("merchant-profile-dev")
-        .getPublicUrl(path);
+    // let tokenPicUrl = null;
+    // if (tokenImage) {
+    //   try {
+    //     tokenPicUrl = await uploadFileToStorage(tokenImage, 'token');
+    //   } catch (err) {
+    //     console.error('Error uploading token image during creation:', err);
+    //     throw new Error(`Failed to upload token image: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    //   }
+    // }
 
-      return publicUrlData.publicUrl;
-    };
-
-    const profilePicPath = `profile-${companyName}-${walletAddresses[0]}`;
-    const profilePicUrl = await uploadImage(profilePicture, profilePicPath);
-
-    let tokenPicUrl = null;
-    if (tokenImage) {
-      const tokenPicPath = `token-${companyName}-${walletAddresses[0]}`;
-      tokenPicUrl = await uploadImage(tokenImage, tokenPicPath);
-    }
 
     const { data, error } = await supabase
-      .from("Merchants")
+      .from("Merchant")
       .insert({
         created_at: new Date().toISOString(),
         merchant_wallet_addr: walletAddresses[0],
         name: companyName,
-        profile_pic: profilePicUrl,
+        profile_pic: null,
         token_name: tokenTicker,
-        token_pic: tokenPicUrl,
+        token_pic: null,
         website_url: companyWebsite,
+        token_mint: null,
       })
       .select();
 

@@ -8,6 +8,7 @@ interface MerchantCardProps {
   rating: number;
   reviews: number;
   image: string;
+  address?: string; // Optional for backward compatibility
 }
 
 export default function MerchantCard({
@@ -15,9 +16,10 @@ export default function MerchantCard({
   rating,
   reviews,
   image,
+  address,
 }: MerchantCardProps) {
   return (
-    <Link href={`/${name}`} className="block">
+    <Link href={address ? `/merchant/${address}` : `/${name}`} className="block">
       <Card className="hover:shadow-lg transition-shadow duration-300">
         <CardHeader className="p-4">
           <div className="flex items-center gap-3">

@@ -178,9 +178,6 @@ describe("reviewsdotfun", () => {
       })
       .accounts(sellCtx)
       .rpc({ skipPreflight: true, commitment: "confirmed" });
-    console.log(pool.toString());
-    // console.log(poolAta.toString());
-    // console.log(feeVault.publicKey.toString());
     const rewardCtx = {
       mint,
       globalPda,

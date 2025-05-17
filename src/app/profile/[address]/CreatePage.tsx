@@ -4,14 +4,19 @@ import type React from "react";
 import { useEffect, useState, FC, FormEvent } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/navigation";
+import { PublicKey } from "@solana/web3.js";
 import { WarningModal } from "./WarningModal";
 import useMerchantStore from "@/store/useMerchantStore";
 import { MerchantForm } from "@/components/profile/MerchantForm";
+import { useReviewsdotfunProgram } from "@/components/reviewsdotfun/reviewsdotfun-data-access";
+import { supabase } from "@/lib/supabaseClient";
+import toast from "react-hot-toast";
 
 const CreatePage: FC = () => {
   const { publicKey } = useWallet();
   const [showModal, setShowModal] = useState(true);
   const router = useRouter();
+  const { createMint, createPool, mintToken, program } = useReviewsdotfunProgram();
 
   const {
     companyName,
@@ -26,6 +31,7 @@ const CreatePage: FC = () => {
     setProfilePicture,
     setTokenTicker,
     setTokenImage,
+    setTokenMint,
     createMerchant,
     resetForm,
   } = useMerchantStore();
@@ -43,13 +49,69 @@ const CreatePage: FC = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    try {
-      await createMerchant();
-      router.push("/");
+    if (!publicKey) {
+      toast.error("Wallet not connected");
+      return;
+    }
 
-      // You might want to redirect the user or show a success message here
+    try {
+      // Step 1: Create merchant profile in Supabase
+      await createMerchant();
+      const { merchant } = useMerchantStore.getState();
+      
+      // Step 2: Create token mint on Solana
+      try {
+        // Calculate the mint address using the same derivation as in createMint
+        console.log("Mint Not yet created");
+        // Create the mint
+        await createMint.mutateAsync({
+          name: tokenTicker,
+          symbol: tokenTicker,
+          uri: "https://reviewsdotfun.com/token",
+          decimals: 6,
+          merchantKey: publicKey,
+        });
+        
+        // Step 3: Create token pool
+        await createPool.mutateAsync({ merchantKey: publicKey });
+        
+      //   // Step 4: Mint initial tokens
+        await mintToken.mutateAsync(publicKey);
+        
+        console.log("Before finding Mint PDA")
+      //   // Step 5: Update the token_mint field in Supabase
+        const [mintAddress] = await PublicKey.findProgramAddress(
+          [Buffer.from("mint"), publicKey.toBuffer()],
+          program.programId
+        );
+        console.log(mintAddress)
+        
+        if (merchant) {
+          const { error: updateError } = await supabase
+            .from("Merchant")
+            .update({ token_mint: mintAddress.toString() })
+            .eq("merchant_wallet_addr", merchant.merchant_wallet_addr);
+          
+          if (updateError) {
+            console.error("Error updating token_mint in Supabase:", updateError);
+            toast.error(`Failed to update token mint: ${updateError.message}`);
+          } else {
+            // Update the local store with the token_mint value
+            setTokenMint(mintAddress.toString());
+            toast.success("Merchant profile and token created successfully!");
+          }
+        }
+      } catch (solanaError) {
+        console.error("Error creating token on Solana:", solanaError);
+        toast.error(`Token creation failed: ${solanaError instanceof Error ? solanaError.message : 'Unknown error'}`);
+        // Continue with redirect even if token creation fails
+      }
+      
+      // Redirect to the merchant admin page
+      router.push(`/merchant-admin/${publicKey.toString()}`);
     } catch (error) {
-      alert(`Error creating profile: ${error}`);
+      console.error("Error creating profile:", error);
+      toast.error(`Error creating profile: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -76,6 +138,7 @@ const CreatePage: FC = () => {
           setProfilePicture={setProfilePicture}
           setTokenTicker={setTokenTicker}
           setTokenImage={setTokenImage}
+          setTokenMint={setTokenMint}
           onSubmit={handleSubmit}
           submitButtonText="Submit"
         />

@@ -23,6 +23,7 @@ interface MerchantFormProps {
   setProfilePicture: (file: File | null) => void;
   setTokenTicker: (ticker: string) => void;
   setTokenImage: (file: File | null) => void;
+  setTokenMint: (mint: string | null) => void;
   onSubmit: (e: React.FormEvent) => Promise<void>;
   submitButtonText: string;
   showCancelButton?: boolean;
@@ -42,6 +43,7 @@ export function MerchantForm({
   setProfilePicture,
   setTokenTicker,
   setTokenImage,
+  setTokenMint,
   onSubmit,
   submitButtonText,
   showCancelButton = false,

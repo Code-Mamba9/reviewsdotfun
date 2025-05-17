@@ -209,8 +209,8 @@ export function useReviewsdotfunProgram() {
         poolAta,
         pool,
         tokenProgram: TOKEN_PROGRAM_ID,
-        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-        systemProgram: SYSTEM_PROGRAM_ID,
+        // associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+        // systemProgram: SYSTEM_PROGRAM_ID,
       };
       return program.methods.sendReward().accounts(rewardCtx).rpc();
     },
@@ -224,6 +224,7 @@ export function useReviewsdotfunProgram() {
     mutationKey: ["reviewsdotfun", "trade", { cluster }],
     mutationFn: async (args: TradeArgs) => {
       const { feeVault, merchantKey, amount, buy } = args;
+      console.log(merchantKey);
       const [mint] = await PublicKey.findProgramAddress(
         [Buffer.from("mint"), merchantKey.toBuffer()],
         program.programId,

@@ -10,9 +10,5 @@ export default function MerchantLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <html lang="en">
-      <body className="bg-gray-100">{children}</body>
-    </html>
-  );
+  return <>{children}</>;
 }
